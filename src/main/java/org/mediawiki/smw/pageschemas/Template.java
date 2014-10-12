@@ -11,9 +11,25 @@ import javax.xml.bind.annotation.XmlElement;
  *
  */
 public class Template extends SchemaItem {
+	String multiple;
 	String format;
 	List<Field> fields=new ArrayList<Field>();
 
+	/**
+	 * @return the multiple
+	 */
+	@XmlAttribute
+	public String getMultiple() {
+		return multiple;
+	}
+	
+	/**
+	 * @param multiple the multiple to set
+	 */
+	public void setMultiple(String multiple) {
+		this.multiple = multiple;
+	}
+	
 	
 	/**
 	 * @return the format
@@ -42,6 +58,6 @@ public class Template extends SchemaItem {
 	public void setFields(List<Field> fields) {
 		this.fields = fields;
 	}
-	
+
 	
 }
