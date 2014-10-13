@@ -40,8 +40,39 @@ public class TestXML {
     fi.parameters.add(new Parameter("size","20"));
     field.setFormInput(fi);
     
+    Field field2=new Field();
+    field.setName("Language");
+    Property property=new Property();
+    property.setName("population");
+    property.setType("Text");
+    property.getAllowedValues().add(new AllowedValue("de"));
+    property.getAllowedValues().add(new AllowedValue("en"));
+       
+    field2.setProperty(property);
+    template.getFields().add(field2);
+    
 		String xml=schema.asXML();
 		System.out.println(xml);
+		String expected="<PageSchema>\n" + 
+				"   <semanticforms_Form name=\"City\"/>\n" + 
+				"   <Template name=\"City\" format=\"standard\">\n" + 
+				"      <Field name=\"Language\">\n" + 
+				"         <semanticforms_FormInput>\n" + 
+				"            <InputType>text</InputType>\n" + 
+				"            <Parameter name=\"size\">20</Parameter>\n" + 
+				"         </semanticforms_FormInput>\n" + 
+				"         <Label>Pop.</Label>\n" + 
+				"      </Field>\n" + 
+				"      <Field>\n" + 
+				"         <semanticmediawiki_Property name=\"population\">\n" + 
+				"            <AllowedValue>de</AllowedValue>\n" + 
+				"            <AllowedValue>en</AllowedValue>\n" + 
+				"            <Type>Text</Type>\n" + 
+				"         </semanticmediawiki_Property>\n" + 
+				"      </Field>\n" + 
+				"   </Template>\n" + 
+				"</PageSchema>";
+		assertTrue(xml.contains(expected));
 	}
 
 	@Test
