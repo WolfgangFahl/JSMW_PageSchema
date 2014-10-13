@@ -98,6 +98,20 @@ public class TestXML {
 			assertEquals("20",params.get(0).getValue());
 			assertEquals("mandatory",params.get(1).getName());
 			assertEquals("",params.get(1).getValue());
+			
+			
+		  List<Section> sections=pageschema.getSections();
+		  assertEquals(1,sections.size());
+		  Section section=sections.get(0);
+		  assertEquals("History",section.getName());
+		  assertEquals(2,section.getLevel());
+		  PageSection pageSection = section.getPageSection();
+		  List<Parameter> pageSectionParams = pageSection.getParameters();
+		  assertEquals(2,pageSectionParams.size());
+		  assertEquals("rows",pageSectionParams.get(0).getName());
+			assertEquals("10",pageSectionParams.get(0).getValue());
+			assertEquals("mandatory",pageSectionParams.get(1).getName());
+			assertEquals("",pageSectionParams.get(1).getValue());
 		}
 	}
 

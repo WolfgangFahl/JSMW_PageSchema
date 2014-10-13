@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class PageSchema {
 	List<Template> templates=new ArrayList<Template>();
 	List<Form> forms=new ArrayList<Form>();
+	List<Section> sections=new ArrayList<Section>();
 
 	/**
 	 * @return the templates
@@ -51,6 +52,21 @@ public class PageSchema {
 	 */
 	public void setForms(List<Form> forms) {
 		this.forms = forms;
+	}
+
+	/**
+	 * @return the sections
+	 */
+	@XmlElement(name = "Section")
+	public List<Section> getSections() {
+		return sections;
+	}
+
+	/**
+	 * @param sections the sections to set
+	 */
+	public void setSections(List<Section> sections) {
+		this.sections = sections;
 	}
 
 	/**
