@@ -4,12 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Base64;
+// import java.util.Base64;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.net.ssl.HttpsURLConnection;
 import javax.security.auth.login.FailedLoginException;
 
 import org.junit.BeforeClass;
@@ -37,7 +36,9 @@ public class TestWiki {
 	 */
 	public String decode(String str) {
 	  //Decode data on other side, by processing encoded data
-		String result=new String(Base64.getDecoder().decode(str));
+		// jdk 8
+		// String result=new String(Base64.getDecoder().decode(str));
+		String result=new String(javax.xml.bind.DatatypeConverter.parseBase64Binary(str));
 		return result;
 	}
 
@@ -48,7 +49,9 @@ public class TestWiki {
 	 */
 	public String encode(String str) {
 	  //encode data on your side using BASE64
-		String result=Base64.getEncoder().encodeToString(str.getBytes());
+		// jdk8
+		// String result=Base64.getEncoder().encodeToString(str.getBytes());
+		String result=javax.xml.bind.DatatypeConverter.printBase64Binary(str.getBytes());
 		return result;
 	}
 
@@ -80,8 +83,8 @@ public class TestWiki {
 			// http://stackoverflow.com/questions/7615645/ssl-handshake-alert-unrecognized-name-error-since-upgrade-to-java-1-7-0
 			System.setProperty("jsse.enableSNIExtension", "false");
 			// http://stackoverflow.com/questions/3093112/certificateexception-no-name-matching-ssl-someurl-de-found
-			HttpsURLConnection
-					.setDefaultHostnameVerifier((hostname, session) -> true);
+			// FIXME JDK 1.8 needed
+			// HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
 			// https://code.google.com/p/misc-utils/wiki/JavaHttpsUrl
 			XTrustProvider.install();
 			Wiki wiki = new Wiki(prot,domain, scriptpath);

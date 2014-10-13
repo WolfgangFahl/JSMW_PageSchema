@@ -19,7 +19,7 @@ public class AllowedValue {
 	
 	/**
 	 * construct an allowed Value
-	 * @param value
+	 * @param value - the value to be held
 	 */
 	public AllowedValue(String value) {
 		this.value=value;
