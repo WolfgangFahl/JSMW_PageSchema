@@ -479,7 +479,7 @@ public class Wiki implements Serializable {
 	private transient int statusinterval = 100; // status check
 	private String useragent = "Wiki.java " + version
 			+ "(https://code.google.com/p/wiki-java/)";
-	private boolean zipped = true;
+	protected boolean zipped = true;
 	private boolean markminor = false, markbot = false;
 	private boolean resolveredirect = false;
 
