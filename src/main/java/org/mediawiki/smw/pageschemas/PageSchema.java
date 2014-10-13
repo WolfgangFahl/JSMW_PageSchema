@@ -11,6 +11,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 
 /**
@@ -19,6 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author wf
  */
 @XmlRootElement(name="PageSchema")
+@XmlType(propOrder = { "forms", "templates", "sections" })
 public class PageSchema {
 	List<Template> templates=new ArrayList<Template>();
 	List<Form> forms=new ArrayList<Form>();
