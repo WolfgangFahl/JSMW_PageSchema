@@ -19,7 +19,7 @@ public class FormInput extends SchemaItem {
 	}
 
 	/**
-	 * @param type the type to set
+	 * @param inputtype the type to set
 	 */
 	public void setInputType(String inputtype) {
 		this.inputtype = inputtype;

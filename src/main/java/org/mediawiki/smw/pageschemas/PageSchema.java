@@ -72,9 +72,9 @@ public class PageSchema {
 	/**
 	 * create a PageSchema from an XML string
 	 * 
-	 * @param xml
-	 * @return
-	 * @throws JAXBException 
+	 * @param xml - xml representation of Page Schema
+	 * @return the PageSchema unmarshalled from the given xml
+	 * @throws JAXBException  if there's something wrong with the xml input
 	 */
 	public static PageSchema fromXML(final String xml) throws JAXBException {
 		// unmarshal the xml message to the format to a W3CValidator Java object
@@ -88,7 +88,7 @@ public class PageSchema {
 
 	/**
 	 * get an XML representation of this Schema
-	 * @return
+	 * @return xml string
 	 * @throws JAXBException 
 	 */
 	public String asXML() throws JAXBException {
