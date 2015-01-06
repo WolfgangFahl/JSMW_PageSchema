@@ -14,46 +14,52 @@
 package org.mediawiki.smw.pageschemas;
 
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import com.bitplan.mediawiki.japi.MediawikiApi;
-
 
 /**
  * http://www.mediawiki.org/wiki/Extension:Page_Schemas
  * 
  * @author wf
  */
-@XmlRootElement(name="PageSchema")
-@XmlType(propOrder = { "forms", "templates", "sections" })
-public class PageSchema {
-	// FIXME - ask Yaron for this extra field 
-	String category;
-	
-	List<Template> templates=new ArrayList<Template>();
-	List<Form> forms=new ArrayList<Form>();
-	List<Section> sections=new ArrayList<Section>();
+@XmlRootElement(name = "PageSchema")
+@XmlType(propOrder = { "category","forms", "templates", "sections" })
+public class PageSchema extends SchemaItem {
+	private static final String VERSION = "0.0.2";
 
+	// FIXME - ask Yaron for this extra field
+	@XmlElement
+	String category;
+
+	List<Template> templates = new ArrayList<Template>();
+	List<Form> forms = new ArrayList<Form>();
+	List<Section> sections = new ArrayList<Section>();
+
+	/**
+	 * default constructor to make JAXB happy
+	 */
 	public PageSchema() {
-		
+
 	}
-	
+
 	/**
 	 * create the PageSchema for the given category
+	 * 
 	 * @param category
 	 */
 	public PageSchema(String category) {
-		this.category=category;
+		this.category = category;
 	}
 
 	/**
@@ -65,7 +71,8 @@ public class PageSchema {
 	}
 
 	/**
-	 * @param templates the templates to set
+	 * @param templates
+	 *          the templates to set
 	 */
 	public void setTemplates(List<Template> templates) {
 		this.templates = templates;
@@ -80,7 +87,8 @@ public class PageSchema {
 	}
 
 	/**
-	 * @param forms the forms to set
+	 * @param forms
+	 *          the forms to set
 	 */
 	public void setForms(List<Form> forms) {
 		this.forms = forms;
@@ -95,7 +103,8 @@ public class PageSchema {
 	}
 
 	/**
-	 * @param sections the sections to set
+	 * @param sections
+	 *          the sections to set
 	 */
 	public void setSections(List<Section> sections) {
 		this.sections = sections;
@@ -104,9 +113,11 @@ public class PageSchema {
 	/**
 	 * create a PageSchema from an XML string
 	 * 
-	 * @param xml - xml representation of Page Schema
+	 * @param xml
+	 *          - xml representation of Page Schema
 	 * @return the PageSchema unmarshalled from the given xml
-	 * @throws JAXBException  if there's something wrong with the xml input
+	 * @throws JAXBException
+	 *           if there's something wrong with the xml input
 	 */
 	public static PageSchema fromXML(final String xml) throws JAXBException {
 		// unmarshal the xml message to the format to a W3CValidator Java object
@@ -119,48 +130,71 @@ public class PageSchema {
 	}
 
 	/**
-	 * get an XML representation of this Schema
-	 * @return xml string
-	 * @throws JAXBException 
-	 */
-	public String asXML() throws JAXBException {
-		JAXBContext jaxbContext = JAXBContext.newInstance(PageSchema.class);
-		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-		// output pretty printed
-		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		StringWriter sw = new StringWriter();
-		jaxbMarshaller.marshal(this, sw);
-		String result=sw.toString();
-		return result;
-	}
-
-	/**
-	 * update Me on the given wiki
-	 * must be already logged in 
+	 * update Me on the given wiki must be already logged in
+	 * 
 	 * @param wiki
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void update(MediawikiApi wiki) throws Exception {
-		if (this.category==null)
+		if (this.category == null)
 			throw new Exception("the category of the schema must be set!");
-		String xml=this.asXML();
-		String pageTitle="Category:"+this.category;
-		xml=xml.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
-		String text=xml+"\n[[Category:PageSchema]]";
-		String summary="modified by JSMW_PageSchema at "+wiki.getIsoTimeStamp();
+		LOGGER.log(Level.INFO, "updating PageSchema for " + this.category + " on "
+				+ wiki.getSiteurl());
+		String xml = this.asXML();
+		String pageTitle = "Category:" + this.category;
+		xml = xml.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
+		if (debug)
+			LOGGER.log(Level.INFO, xml);
+
+		String content = "\n[[Category:PageSchema]]\n"
+				+ "This Category has been generated with JSMW_PageSchema Version "
+				+ VERSION + "at" + wiki.getIsoTimeStamp() + "<br>\n"
+				+ "It has the template: [[:Template:" + this.category + "]]<br>\n"
+				+ "And the form: [[:Form:" + this.category + "]]<br>\n" + "";
+
+		String text = xml + content + this.wikiDocumentation+"<br>\n"+this.asPlantUml();
+
+		String summary = "modified by JSMW_PageSchema at " + wiki.getIsoTimeStamp();
 		wiki.edit(pageTitle, text, summary);
 	}
 
 	/**
+	 * return me as an uml diagram
+	 */
+	public String asPlantUml() {
+		String content = getUmlTitle("PageSchema " + this.category);
+		content += getUmlNote(category + "DiagramNote", "Copyright (c) 2015 BITPlan GmbH");
+		content += getUmlClass(this.category,"");
+		String result = super.asPlantUml(content);
+		return result;
+	}
+
+	/**
+	 * return me as an UML Class
+	 * @param className
+	 * @param classContent
+	 * @return
+	 */
+	@XmlTransient
+	protected String getUmlClass(String className, String classContent) {
+		// FIXME top of "+className
+		String classNote=getUmlNote(className+"Note",this.umlDocumentation);
+		String result = classNote+"Class " + className + "{\n" + classContent + "\n"
+				+ "}\n";
+		return result;
+	}
+
+	/**
 	 * get the default Template
+	 * 
 	 * @return
 	 */
 	public Template getDefaultTemplate() {
 		// add a Form
-		Form form = new Form(this,this.category);
-	
+		Form form = new Form(this, this.category);
+
 		// add a template
-		Template template = new Template(form,this.category,"standard");
+		Template template = new Template(form, this.category, "standard");
 		return template;
 	}
 }

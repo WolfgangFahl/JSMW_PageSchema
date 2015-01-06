@@ -15,6 +15,7 @@ package org.mediawiki.smw.pageschemas;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -105,8 +106,9 @@ public class Template extends SchemaItem {
 	public Field addField(String name, String label, String inputType,
 		String paramList) {
  	  // add a field
-		Field field = new Field(this,"category","category");
-		FormInput formInput = new FormInput(field,"Page","size=80");
+		Field field = new Field(this,name,label);
+		FormInput formInput = new FormInput(field,inputType,paramList);
+		LOGGER.log(Level.FINE,"created FormInput"+formInput.name);
 		return field;
 	}
 
