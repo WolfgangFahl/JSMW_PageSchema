@@ -28,27 +28,21 @@ public class TestPageSchema extends BaseSchemaTest {
 		pageSchema.setWikiDocumentation("see https://www.mediawiki.org/wiki/Extension:Page_Schemas");
 		pageSchema.setUmlDocumentation("This is the master class of the PageSchema hierarchy. It has 1:n relations to forms, templates and sections");
 		
-		// add a Form
-		Form form = new Form(pageSchema,"PageSchema");
-	
-		// add a template
-		Template template = new Template(form,"PageSchema","standard");
-
+			// add a template
+		Template template = pageSchema.getDefaultTemplate();
 		// add a field
-		Field field = new Field(template,"category","category");
-		FormInput formInput = new FormInput(field,"Page","size=80");
+		template.addField("category","category","Page","size=80");
 		
-
 		PageSchema formPageSchema = new PageSchema(psm,"Form");
 		Template formTemplate=formPageSchema.getDefaultTemplate();
 		formTemplate.addField("createtitle","create Title","Text","size=80");
 		formTemplate.addField("edittitle","edit Title","Text","size=80");
-		formTemplate.addField("pageschema","Schema","Page","size=80");
+		formTemplate.addField("pageschema","Schema","PageSchema-Page","size=80");
 
 		PageSchema formInputPageSchema = new PageSchema(psm,"FormInput");
 		formInputPageSchema.setWikiDocumentation("the inputType can be any of [https://semantic-mediawiki.org/wiki/Help:List_of_datatypes Help:List_of_datatypes]");
 	  Template formInputTemplate=formInputPageSchema.getDefaultTemplate();
-	  formInputTemplate.addField("field", "Form", "Page", "size=80");
+	  formInputTemplate.addField("field", "Form", "Form-Page", "size=80");
 	  
 		PageSchema fieldPageSchema = new PageSchema(psm,"Field");
 		fieldPageSchema.setUmlDocumentation("a container for single piece of data");
@@ -57,7 +51,7 @@ public class TestPageSchema extends BaseSchemaTest {
 		fieldTemplate.addField("name","Name","Text","size=80");
 		fieldTemplate.addField("label","Label","Text","size=80");
 		fieldTemplate.addField("form","Form","Page","size=80");
-	  formTemplate.addField("formInput", "FormInput", "Page", "size=80");
+	  fieldTemplate.addField("formInput", "FormInput", "FormInput-Page", "size=80");
 	  
 	  // create Schemas
 		psm.update(this.getWiki());
