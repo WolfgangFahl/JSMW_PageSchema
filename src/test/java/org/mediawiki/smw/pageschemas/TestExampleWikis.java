@@ -14,18 +14,30 @@ public class TestExampleWikis extends BaseSchemaTest {
 
 	@Test
 	public void testCreateExampleWikisSchema() throws Exception {
-		PageSchema pageSchema = new PageSchema("ExampleWiki");
-		pageSchema.setUmlDocumentation("ExampleWikis are testCases for mediawiki-japi");
-		pageSchema.setWikiDocumentation("see [[ExampleWikis]]");
+		PageSchemaManager psm=new PageSchemaManager();
+		
+		PageSchema exampleWikiPageSchema = new PageSchema(psm,"ExampleWiki");
+		exampleWikiPageSchema.setUmlDocumentation("ExampleWikis are testCases for mediawiki-japi");
+		exampleWikiPageSchema.setWikiDocumentation("see [[ExampleWikis]]");
 			// add a template
-		Template template = pageSchema.getDefaultTemplate();
+		Template template = exampleWikiPageSchema.getDefaultTemplate();
 		template.addField("siteurl", "siteurl","URL","size=80");
 		template.addField("wikid", "wikiId","Text", "size=40");
 		template.addField("mwversion", "Version","Text", "size=15");
 		template.addField("mwlogo", "Logo","URL", "size=100");
 		
-		// update the schema on the given wiki
-		pageSchema.update(this.getWiki());
+		PageSchema examplePagePageSchema = new PageSchema(psm,"ExamplePage");
+		examplePagePageSchema.setUmlDocumentation("examplePages are testPages for mediawiki-japi");
+		examplePagePageSchema.setWikiDocumentation("see [[Category:ExamplePage]]");
+			// add a template
+		template = examplePagePageSchema.getDefaultTemplate();
+		template.addField("content", "Content","text","size=80");
+		template.addField("page", "Page","Page", "size=40");
+		template.addField("wiki", "wiki","ExampleWiki-Page", "size=40");
+		template.addField("forEdit", "write access","Boolean", "size=15");	
+			
+		// update the schemas on the given wiki
+		psm.update(this.getWiki());
 	}
 
 }

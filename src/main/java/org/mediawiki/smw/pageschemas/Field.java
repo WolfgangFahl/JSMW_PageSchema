@@ -93,7 +93,11 @@ public class Field extends SchemaItem {
 
 	@Override
 	public String getUmlContent() {
-		String result=this.formInput.inputtype+" "+this.getLabel()+"\n";
+		String result="";
+		// FIXME this is a link - make this conceptually clear (e.g. via interface or mapping?)
+		if (!"Page".equals(this.formInput.inputtype)) {
+			result=this.formInput.inputtype+" "+this.getLabel()+"\n";
+		}
 	  return result;
 	}
 	

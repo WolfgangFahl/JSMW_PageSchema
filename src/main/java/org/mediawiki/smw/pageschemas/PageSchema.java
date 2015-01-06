@@ -34,13 +34,9 @@ import com.bitplan.mediawiki.japi.MediawikiApi;
  * @author wf
  */
 @XmlRootElement(name = "PageSchema")
-@XmlType(propOrder = { "category","forms", "templates", "sections" })
+@XmlType(propOrder = { "forms", "templates", "sections" })
 public class PageSchema extends SchemaItem {
 	private static final String VERSION = "0.0.2";
-
-	// FIXME - ask Yaron for this extra field
-	@XmlElement
-	String category;
 
 	List<Template> templates = new ArrayList<Template>();
 	List<Form> forms = new ArrayList<Form>();
@@ -60,6 +56,17 @@ public class PageSchema extends SchemaItem {
 	 */
 	public PageSchema(String category) {
 		this.category = category;
+	}
+
+	/**
+	 * create a pageSchema and add it to the given manager
+	 * 
+	 * @param psm
+	 * @param category
+	 */
+	public PageSchema(PageSchemaManager psm, String category) {
+		this(category);
+		psm.pageSchemas.put(category, this);
 	}
 
 	/**
@@ -128,14 +135,14 @@ public class PageSchema extends SchemaItem {
 		PageSchema result = (PageSchema) u.unmarshal(xmlReader);
 		return result;
 	}
-
+	
 	/**
 	 * update Me on the given wiki must be already logged in
 	 * 
 	 * @param wiki
 	 * @throws Exception
 	 */
-	public void update(MediawikiApi wiki) throws Exception {
+	public void update(MediawikiApi wiki,List<PageSchema> linkedSchemas ) throws Exception {
 		if (this.category == null)
 			throw new Exception("the category of the schema must be set!");
 		LOGGER.log(Level.INFO, "updating PageSchema for " + this.category + " on "
@@ -152,38 +159,57 @@ public class PageSchema extends SchemaItem {
 				+ "It has the template: [[:Template:" + this.category + "]]<br>\n"
 				+ "And the form: [[:Form:" + this.category + "]]<br>\n" + "";
 
-		String text = xml + content + this.wikiDocumentation+"<br>\n"+this.asPlantUml();
+		String text = xml + content + this.wikiDocumentation + "<br>\n";
+		for (PageSchema linkedSchema:linkedSchemas) {
+			text+="* see also [[:Category:"+linkedSchema.category+"]]\n";
+		}
+		text+=this.asPlantUml(linkedSchemas);
 
 		String summary = "modified by JSMW_PageSchema at " + wiki.getIsoTimeStamp();
-		wiki.setDebug(true);
+		// wiki.setDebug(true);
 		wiki.edit(pageTitle, text, summary);
+	}
+
+	/**
+	 * get the copyright
+	 * 
+	 * @return the copyright
+	 */
+	public String getCopyright() {
+		String result = "Copyright (c) 2015 BITPlan GmbH\n"
+				+ "[[http://www.bitplan.com]]";
+		return result;
 	}
 
 	/**
 	 * return me as an uml diagram
 	 */
-	public String asPlantUml() {
+	public String asPlantUml(List<PageSchema> linkedSchemas) {
 		String content = getUmlTitle("PageSchema " + this.category);
-		content += getUmlNote(category + "DiagramNote", "Copyright (c) 2015 BITPlan GmbH\n"
-				+ "[[http://www.bitplan.com]]");
-		String classContent="";
-		for (Template template:this.getTemplates()) {
-			classContent+=template.getUmlContent();
+		String note = "";
+		content += getUmlNote(category + "DiagramNote", getCopyright() + note);
+		String classContent = "";
+		for (Template template : this.getTemplates()) {
+			classContent += template.getUmlContent();
 		}
-		content += getUmlClass(this.category,classContent);
-		content += "hide "+getSpot()+" circle\n";
+		content += getUmlClass(this.category, classContent);
+		for (PageSchema linkedSchema:linkedSchemas) {
+			content+=category+" -- "+linkedSchema.category+"\n";
+		}
+		content += "hide " + getSpot() + " circle\n";
 		String result = super.asPlantUml(content);
 		return result;
 	}
-	
+
 	public String getSpot() {
 		// << (S,#FF7700) Singleton >>
-		String spot=" <<Category>>";
+		String spot = " <<Category>>";
 		return spot;
 	}
 
 	/**
 	 * return me as an UML Class
+	 * 
 	 * @param className
 	 * @param classContent
 	 * @return
@@ -192,11 +218,11 @@ public class PageSchema extends SchemaItem {
 	protected String getUmlClass(String className, String classContent) {
 		// FIXME top of "+className
 		// http://plantuml.sourceforge.net/classes.html
-	
-		String classNote=getUmlNote(className+"Note ",this.umlDocumentation);
-		classNote+=className+"Note .."+className+"\n";
-		String result = classNote+"Class " + className + getSpot()+" {\n" + classContent + "\n"
-				+ "}\n";
+
+		String classNote = getUmlNote(className + "Note ", this.umlDocumentation);
+		classNote += className + "Note .." + className + "\n";
+		String result = classNote + "Class " + className + getSpot() + " {\n"
+				+ classContent + "\n" + "}\n";
 		return result;
 	}
 
@@ -213,4 +239,5 @@ public class PageSchema extends SchemaItem {
 		Template template = new Template(form, this.category, "standard");
 		return template;
 	}
+
 }

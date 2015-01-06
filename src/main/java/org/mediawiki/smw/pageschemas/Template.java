@@ -107,6 +107,16 @@ public class Template extends SchemaItem {
 		String paramList) {
  	  // add a field
 		Field field = new Field(this,name,label);
+		// FIXME workaround for typed pages
+		if (inputType.contains("-Page")) {
+			String[] parts = inputType.split("-");
+			if (parts.length!=2) {
+				LOGGER.log(Level.SEVERE,"invalid inputType "+inputType);
+			}	else {
+				field.category=parts[0];
+				inputType="Page";
+			}
+		}
 		FormInput formInput = new FormInput(field,inputType,paramList);
 		// FIXME Template name could be different then type name
 		// fix this.name here ...
@@ -122,6 +132,22 @@ public class Template extends SchemaItem {
 		String result="";
 		for (Field field:this.getFields()) {
 			result+=field.getUmlContent();
+		}
+		return result;
+	}
+	
+	/**
+	 * get a list of PageSchemas that are linked via the corresponding "Page" Category;
+	 * @return
+	 */
+	public List<PageSchema> getLinkedPageSchemas(PageSchemaManager pm) {
+		List<PageSchema> result=new ArrayList<PageSchema>();
+		for (Field field:this.getFields()) {
+			if (field.category!=null) {
+				PageSchema linkedPageSchema=pm.lookup(field.category);
+				if (linkedPageSchema!=null)
+					result.add(linkedPageSchema);
+			}
 		}
 		return result;
 	}

@@ -20,7 +20,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -33,7 +32,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 // http://blog.bdoughan.com/2011/06/using-jaxbs-xmlaccessortype-to.html
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class SchemaItem {
-	protected boolean debug=true;
+	protected boolean debug=false;
 	protected static Logger LOGGER = Logger
 			.getLogger("org.mediawiki.smw.pageschemas");
 	
@@ -42,6 +41,10 @@ public abstract class SchemaItem {
 	PageSchema pageSchema;
 	
 	String name;
+	
+	// FIXME - ask Yaron for this extra field
+	@XmlAttribute
+	String category;
 	
 	// FIXME - ask Yaron to add these
 	String wikiDocumentation="";
@@ -140,7 +143,9 @@ public abstract class SchemaItem {
 	  	  "skinparam classBorderColor #FF8000\n" + 
 	  	  "skinparam classFontColor black\n" + 
 	  	  "skinparam classFontSize 12\n" + 
-	  	  "skinparam classFontName Arial\n";
+	  	  "skinparam classFontName Arial\n"+
+	  	  "skinparam NoteBorderColor #FF8000\n"+
+	  	  "skinparam NoteBackgroundColor #FFFFF0\n";
 	  return skinParams;
 	}
 	
