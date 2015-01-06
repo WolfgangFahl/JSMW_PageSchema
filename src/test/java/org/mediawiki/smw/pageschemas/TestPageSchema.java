@@ -54,8 +54,8 @@ public class TestPageSchema extends BaseSchemaTest {
 	  formInputPageSchema.update(this.getWiki());
 	  
 		PageSchema fieldPageSchema = new PageSchema("Field");
-		fieldPageSchema.setWikiDocumentation("https://semantic-mediawiki.org/wiki/Help:List_of_datatypes");
-		fieldPageSchema.setUmlDocumentation("");
+		fieldPageSchema.setUmlDocumentation("a container for single piece of data");
+		fieldPageSchema.setWikiDocumentation("the name of the field will also be a property name so please make sure you follow the rules for [https://www.mediawiki.org/wiki/Manual:Page_title page titles]");
 		Template fieldTemplate=fieldPageSchema.getDefaultTemplate();
 		fieldTemplate.addField("name","Name","Text","size=80");
 		fieldTemplate.addField("label","Label","Text","size=80");

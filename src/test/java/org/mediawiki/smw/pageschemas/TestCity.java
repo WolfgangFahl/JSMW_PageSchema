@@ -27,10 +27,19 @@ public class TestCity extends BaseSchemaTest {
 	  cityPageSchema.setWikiDocumentation("see [https://www.mediawiki.org/wiki/Extension:Page_Schemas#Sample%20XML%20Structure Semantic Page Schemas sample xml structure]");
 	  cityPageSchema.setUmlDocumentation("I represent a City like Berlin, New York or Tokyo");
 	  Template cityTemplate = cityPageSchema.getDefaultTemplate();
-	  cityTemplate.addField("Population", "Pop.","Number","size=20,mandatory=");
+	  Field pop=cityTemplate.addField("Population", "Pop.","Number","size=20,mandatory=");
 	  cityTemplate.addField("Country", "Country","Page","size=50,mandatory=");
+	  cityTemplate.addField("Mayor", "Mayor","Page","size=80");
+	  cityPageSchema.update(this.getWiki());
+	  
+	  PageSchema countryPageSchema=new PageSchema("Country");
+	  countryPageSchema.setUmlDocumentation("I represent a Country like Germany, United States or Japan");
+	  countryPageSchema.setWikiDocumentation("see also [[:Category:City]]");
+	  Template countryTemplate=countryPageSchema.getDefaultTemplate();
+	  countryTemplate.addField("name","Name", "Text", "size=2");
+	  countryTemplate.addField("iso3166_2","Country Code", "Text", "size=2");
 		// update the schema on the given wiki
-		cityPageSchema.update(this.getWiki());
+		countryPageSchema.update(this.getWiki());
 	}
 	
 }

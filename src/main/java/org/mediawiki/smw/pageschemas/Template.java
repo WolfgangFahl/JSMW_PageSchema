@@ -108,6 +108,11 @@ public class Template extends SchemaItem {
  	  // add a field
 		Field field = new Field(this,name,label);
 		FormInput formInput = new FormInput(field,inputType,paramList);
+		// FIXME Template name could be different then type name
+		// fix this.name here ...
+	  Property property=new Property(this.name+"_"+name,inputType);
+	  field.setProperty(property);
+
 		LOGGER.log(Level.FINE,"created FormInput"+formInput.name);
 		return field;
 	}

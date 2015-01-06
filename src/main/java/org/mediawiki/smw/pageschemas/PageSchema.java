@@ -155,6 +155,7 @@ public class PageSchema extends SchemaItem {
 		String text = xml + content + this.wikiDocumentation+"<br>\n"+this.asPlantUml();
 
 		String summary = "modified by JSMW_PageSchema at " + wiki.getIsoTimeStamp();
+		wiki.setDebug(true);
 		wiki.edit(pageTitle, text, summary);
 	}
 
@@ -163,7 +164,8 @@ public class PageSchema extends SchemaItem {
 	 */
 	public String asPlantUml() {
 		String content = getUmlTitle("PageSchema " + this.category);
-		content += getUmlNote(category + "DiagramNote", "Copyright (c) 2015 BITPlan GmbH");
+		content += getUmlNote(category + "DiagramNote", "Copyright (c) 2015 BITPlan GmbH\n"
+				+ "[[http://www.bitplan.com]]");
 		String classContent="";
 		for (Template template:this.getTemplates()) {
 			classContent+=template.getUmlContent();
