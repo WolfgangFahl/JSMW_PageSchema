@@ -23,7 +23,11 @@ public class TestXML {
 		parameter.setWikiDocumentation("wiki content");
 		parameter.setUmlDocumentation("umlDocumentation content");
 		String xml=parameter.asXML();
-		System.out.println(xml);
+		// System.out.println(xml);
+		String expected="<parameter name=\"name\">\n" + 
+				"   <umlDocumentation>umlDocumentation content</umlDocumentation>value<wikiDocumentation>wiki content</wikiDocumentation>\n" + 
+				"</parameter>";
+		assertTrue(xml.contains(expected));
 	}
 	
 	@Test

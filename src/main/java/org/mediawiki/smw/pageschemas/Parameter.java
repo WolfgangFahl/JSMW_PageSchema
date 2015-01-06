@@ -1,13 +1,14 @@
 package org.mediawiki.smw.pageschemas;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlValue;
 
 /**
  * a parameter
  * @author wf
  *
  */
+@XmlRootElement
 public class Parameter extends SchemaItem {
 	@XmlTransient Field field;
 	
