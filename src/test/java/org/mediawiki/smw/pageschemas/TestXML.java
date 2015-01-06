@@ -37,7 +37,7 @@ public class TestXML {
     
     FormInput fi=new FormInput();
     fi.setInputType("text");
-    fi.parameters.add(new Parameter("size","20"));
+    fi.parameters.add(new Parameter(field,"size","20"));
     field.setFormInput(fi);
     
     Field field2=new Field();

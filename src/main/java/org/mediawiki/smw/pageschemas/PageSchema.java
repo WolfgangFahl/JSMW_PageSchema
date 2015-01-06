@@ -1,3 +1,16 @@
+/**
+ * Copyright (C) 2014-2015 BITPlan GmbH
+ *
+ * Pater-Delp-Str. 1
+ * D-47877 Willich-Schiefbahn
+ *
+ * http://www.bitplan.com
+ * 
+ * This source is part of
+ * https://github.com/WolfgangFahl/JSMW_PageSchema
+ * and the license for JSMW_PageSchema applies
+ * 
+ */
 package org.mediawiki.smw.pageschemas;
 
 import java.io.StringReader;
@@ -13,6 +26,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.bitplan.mediawiki.japi.MediawikiApi;
+
 
 /**
  * http://www.mediawiki.org/wiki/Extension:Page_Schemas
@@ -22,9 +37,24 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name="PageSchema")
 @XmlType(propOrder = { "forms", "templates", "sections" })
 public class PageSchema {
+	// FIXME - ask Yaron for this extra field 
+	String category;
+	
 	List<Template> templates=new ArrayList<Template>();
 	List<Form> forms=new ArrayList<Form>();
 	List<Section> sections=new ArrayList<Section>();
+
+	public PageSchema() {
+		
+	}
+	
+	/**
+	 * create the PageSchema for the given category
+	 * @param category
+	 */
+	public PageSchema(String category) {
+		this.category=category;
+	}
 
 	/**
 	 * @return the templates
@@ -102,5 +132,35 @@ public class PageSchema {
 		jaxbMarshaller.marshal(this, sw);
 		String result=sw.toString();
 		return result;
+	}
+
+	/**
+	 * update Me on the given wiki
+	 * must be already logged in 
+	 * @param wiki
+	 * @throws Exception 
+	 */
+	public void update(MediawikiApi wiki) throws Exception {
+		if (this.category==null)
+			throw new Exception("the category of the schema must be set!");
+		String xml=this.asXML();
+		String pageTitle="Category:"+this.category;
+		xml=xml.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
+		String text=xml+"\n[[Category:PageSchema]]";
+		String summary="modified by JSMW_PageSchema at "+wiki.getIsoTimeStamp();
+		wiki.edit(pageTitle, text, summary);
+	}
+
+	/**
+	 * get the default Template
+	 * @return
+	 */
+	public Template getDefaultTemplate() {
+		// add a Form
+		Form form = new Form(this,this.category);
+	
+		// add a template
+		Template template = new Template(form,this.category,"standard");
+		return template;
 	}
 }

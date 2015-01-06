@@ -1,19 +1,41 @@
 package org.mediawiki.smw.pageschemas;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 /**
  * a Field
  * @author wf
  *
  */
 public class Field extends SchemaItem {
+	@XmlTransient Template template;
+	
 	String label;
   Property property;
   FormInput formInput;
   
+  /**
+   * default constructor to make JAXB happy
+   */
+  public Field() {
+	}
+
+  /**
+   * create a new Field with the given name and label for the given template and
+   * add it to the given template
+   * @param template
+   * @param name
+   * @param label
+   */
+	public Field(Template template, String name, String label) {
+		this.template=template;
+		this.setPageSchema(template.getPageSchema());
+		setName(name);
+		setLabel(label);
+		template.getFields().add(this);
+	}
+
+
 	/**
 	 * @return the label
 	 */
@@ -59,6 +81,15 @@ public class Field extends SchemaItem {
 		this.formInput = formInput;
 	}
 
+	/**
+	 * set the given Form input
+	 * @param inputType
+	 * @param paramlist
+	 */
+	public FormInput setFormInput(String inputType, String paramlist) {
+		FormInput formInput = new FormInput(this, inputType,paramlist);
+		return formInput;
+	}
 	
 	
 

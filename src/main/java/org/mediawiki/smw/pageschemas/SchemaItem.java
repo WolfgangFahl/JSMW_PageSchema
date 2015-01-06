@@ -1,6 +1,7 @@
 package org.mediawiki.smw.pageschemas;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * base class for Semantic Page Schema Items
@@ -8,7 +9,26 @@ import javax.xml.bind.annotation.XmlAttribute;
  *
  */
 public class SchemaItem {
+  // back link to my pageSchema
+	@XmlTransient
+	PageSchema pageSchema;
 	String name;
+	
+	/**
+	 * get my PageSchema 
+	 * @return my pageSchema
+	 */
+	protected PageSchema getPageSchema() {
+		return pageSchema;
+	}
+	
+	/**
+	 * set my PageSchema
+	 * @param pageSchema - the PageSchema to set for me
+	 */
+	protected void setPageSchema(PageSchema pageSchema) {
+		this.pageSchema=pageSchema;
+	}
 
 	/**
 	 * @return the name

@@ -1,5 +1,5 @@
 <!--
-	Copyright (c) 2014 BITPlan GmbH
+	Copyright (c) 2014-2015 BITPlan GmbH
 
 	Project details and license at:
 	https://github.com/WolfgangFahl/JSMW_PageSchema
@@ -51,6 +51,12 @@
 		<moxy.version>2.5.1</moxy.version>
 	</properties>
 	<dependencies>
+	  <!--  mediawik-japi -->
+		<dependency>
+			<groupId>com.bitplan</groupId>
+			<artifactId>mediawiki-japi</artifactId>
+			<version>0.0.2</version>
+		</dependency>
 		<!-- commons io -->
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -98,7 +104,7 @@
 				<version>3.1</version>
 				<configuration>
 					<source>1.7</source>
-          <target>1.7</target>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>

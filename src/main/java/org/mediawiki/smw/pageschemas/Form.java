@@ -1,6 +1,18 @@
+/**
+ * Copyright (C) 2014-2015 BITPlan GmbH
+ *
+ * Pater-Delp-Str. 1
+ * D-47877 Willich-Schiefbahn
+ *
+ * http://www.bitplan.com
+ * 
+ * This source is part of
+ * https://github.com/WolfgangFahl/JSMW_PageSchema
+ * and the license for JSMW_PageSchema applies
+ * 
+ */
 package org.mediawiki.smw.pageschemas;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
@@ -13,6 +25,25 @@ public class Form extends SchemaItem {
 	String createTitle;
 	String editTitle;
 	
+	/**
+	 * default constructor to make JAXB happy
+	 */
+	public Form() {
+	}
+
+	/**
+	 * create a form with the given title and add it to the given schema
+	 * @param pageSchema
+	 * @param title
+	 */
+	public Form(PageSchema pageSchema, String title) {
+		setPageSchema(pageSchema);
+		setName(title);
+		getPageSchema().forms.add(this);
+	}
+	
+	
+
 	/**
 	 * @return the createTitle
 	 */
