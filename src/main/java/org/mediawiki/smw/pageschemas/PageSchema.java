@@ -23,6 +23,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
@@ -34,7 +35,8 @@ import com.bitplan.mediawiki.japi.MediawikiApi;
  * @author wf
  */
 @XmlRootElement(name = "PageSchema")
-@XmlType(propOrder = { "forms", "templates", "sections" })
+@XmlSeeAlso({SchemaItem.class})
+@XmlType(propOrder = { "wikiDocumentation","umlDocumentation","value","forms", "templates", "sections" })
 public class PageSchema extends SchemaItem {
 	private static final String VERSION = "0.0.2";
 

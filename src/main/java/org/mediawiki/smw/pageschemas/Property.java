@@ -12,6 +12,8 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public class Property extends SchemaItem {
 	String type;
+	String linkedForm;
+
 	List<AllowedValue> allowedValues=new ArrayList<AllowedValue>();
 
 	/**
@@ -42,6 +44,20 @@ public class Property extends SchemaItem {
 	 */
 	public void setType(String type) {
 		this.type = type;
+	}
+	
+	/**
+	 * @return the linkedForm
+	 */
+	public String getLinkedForm() {
+		return linkedForm;
+	}
+
+	/**
+	 * @param linkedForm the linkedForm to set
+	 */
+	public void setLinkedForm(String linkedForm) {
+		this.linkedForm = linkedForm;
 	}
 
 	/**

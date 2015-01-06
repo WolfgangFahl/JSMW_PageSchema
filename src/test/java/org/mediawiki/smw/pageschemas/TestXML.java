@@ -16,6 +16,17 @@ import org.junit.Test;
 public class TestXML {
 	
 	@Test
+	public void testMarshal() throws JAXBException {
+		Parameter parameter=new Parameter();
+		parameter.setName("name");
+		parameter.setValue("value");
+		parameter.setWikiDocumentation("wiki content");
+		parameter.setUmlDocumentation("umlDocumentation content");
+		String xml=parameter.asXML();
+		System.out.println(xml);
+	}
+	
+	@Test
 	public void testPageSchema2XML() throws JAXBException {
 		PageSchema schema=new PageSchema();
 		// add a Form
@@ -54,17 +65,34 @@ public class TestXML {
 		String xml=schema.asXML();
 		System.out.println(xml);
 		String expected="<PageSchema>\n" + 
-				"   <semanticforms_Form name=\"City\"/>\n" + 
+				"   <wikiDocumentation></wikiDocumentation>\n" + 
+				"   <umlDocumentation></umlDocumentation>\n" + 
+				"   <semanticforms_Form name=\"City\">\n" + 
+				"      <umlDocumentation></umlDocumentation>\n" + 
+				"      <wikiDocumentation></wikiDocumentation>\n" + 
+				"   </semanticforms_Form>\n" + 
 				"   <Template name=\"City\" format=\"standard\">\n" + 
+				"      <umlDocumentation></umlDocumentation>\n" + 
+				"      <wikiDocumentation></wikiDocumentation>\n" + 
 				"      <Field name=\"Language\">\n" + 
+				"         <umlDocumentation></umlDocumentation>\n" + 
+				"         <wikiDocumentation></wikiDocumentation>\n" + 
 				"         <semanticforms_FormInput>\n" + 
+				"            <umlDocumentation></umlDocumentation>\n" + 
+				"            <wikiDocumentation></wikiDocumentation>\n" + 
 				"            <InputType>text</InputType>\n" + 
-				"            <Parameter name=\"size\">20</Parameter>\n" + 
+				"            <Parameter name=\"size\">\n" + 
+				"               <umlDocumentation></umlDocumentation>20<wikiDocumentation></wikiDocumentation>\n" + 
+				"            </Parameter>\n" + 
 				"         </semanticforms_FormInput>\n" + 
 				"         <Label>Pop.</Label>\n" + 
 				"      </Field>\n" + 
 				"      <Field>\n" + 
+				"         <umlDocumentation></umlDocumentation>\n" + 
+				"         <wikiDocumentation></wikiDocumentation>\n" + 
 				"         <semanticmediawiki_Property name=\"population\">\n" + 
+				"            <umlDocumentation></umlDocumentation>\n" + 
+				"            <wikiDocumentation></wikiDocumentation>\n" + 
 				"            <AllowedValue>de</AllowedValue>\n" + 
 				"            <AllowedValue>en</AllowedValue>\n" + 
 				"            <Type>Text</Type>\n" + 

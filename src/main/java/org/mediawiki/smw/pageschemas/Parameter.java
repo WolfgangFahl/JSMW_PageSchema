@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlValue;
  */
 public class Parameter extends SchemaItem {
 	@XmlTransient Field field;
-	String value;
+	
 	
 
 	/**
@@ -31,20 +31,5 @@ public class Parameter extends SchemaItem {
 		this.value=value;
 	}
 
-
-	/**
-	 * @return the value
-	 */
-	@XmlValue
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * @param value the value to set
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
 	
 }
