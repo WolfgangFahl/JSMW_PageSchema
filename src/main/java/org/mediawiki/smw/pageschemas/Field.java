@@ -90,6 +90,12 @@ public class Field extends SchemaItem {
 		FormInput formInput = new FormInput(this, inputType,paramlist);
 		return formInput;
 	}
+
+	@Override
+	public String getUmlContent() {
+		String result=this.getLabel()+"\n";
+	  return result;
+	}
 	
 	
 

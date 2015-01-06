@@ -71,4 +71,10 @@ public class Form extends SchemaItem {
 		this.editTitle = editTitle;
 	}
 
+	@Override
+	public String getUmlContent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

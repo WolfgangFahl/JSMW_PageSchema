@@ -148,7 +148,7 @@ public class PageSchema extends SchemaItem {
 
 		String content = "\n[[Category:PageSchema]]\n"
 				+ "This Category has been generated with JSMW_PageSchema Version "
-				+ VERSION + "at" + wiki.getIsoTimeStamp() + "<br>\n"
+				+ VERSION + " at " + wiki.getIsoTimeStamp() + "<br>\n"
 				+ "It has the template: [[:Template:" + this.category + "]]<br>\n"
 				+ "And the form: [[:Form:" + this.category + "]]<br>\n" + "";
 
@@ -165,6 +165,9 @@ public class PageSchema extends SchemaItem {
 		String content = getUmlTitle("PageSchema " + this.category);
 		content += getUmlNote(category + "DiagramNote", "Copyright (c) 2015 BITPlan GmbH");
 		content += getUmlClass(this.category,"");
+		for (Template template:this.getTemplates()) {
+			content+=template.getUmlContent();
+		}
 		String result = super.asPlantUml(content);
 		return result;
 	}
@@ -178,8 +181,12 @@ public class PageSchema extends SchemaItem {
 	@XmlTransient
 	protected String getUmlClass(String className, String classContent) {
 		// FIXME top of "+className
-		String classNote=getUmlNote(className+"Note",this.umlDocumentation);
-		String result = classNote+"Class " + className + "{\n" + classContent + "\n"
+		// http://plantuml.sourceforge.net/classes.html
+		// << (S,#FF7700) Singleton >>
+		String spot=" <<Category>>";
+		String classNote=getUmlNote(className+"Note ",this.umlDocumentation);
+		classNote+=className+"Note .."+className+"\n";
+		String result = classNote+"Class " + className + spot+" {\n" + classContent + "\n"
 				+ "}\n";
 		return result;
 	}

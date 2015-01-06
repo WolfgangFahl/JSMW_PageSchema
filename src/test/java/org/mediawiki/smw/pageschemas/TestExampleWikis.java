@@ -15,21 +15,12 @@ public class TestExampleWikis extends BaseSchemaTest {
 	@Test
 	public void testCreateExampleWikisSchema() throws Exception {
 		PageSchema pageSchema = new PageSchema("ExampleWiki");
-		// add a Form
-		Form form = new Form(pageSchema, "ExampleWiki");
-
-		// add a template
-		Template template = new Template(form, "ExampleWiki", "standard");
-
-		// add a siteurl field
-		Field siteurl = new Field(template, "siteurl", "siteurl");
-		siteurl.setFormInput("URL","size=80");
-		
-		// add a wikiid field
-		Field wikiid = new Field(template, "wikid", "wikiId");
-		wikiid.setFormInput("Text", "size=40");
-		
-
+		pageSchema.setUmlDocumentation("ExampleWikis are testCases for mediawiki-japi");
+		pageSchema.setWikiDocumentation("see [[ExampleWikis]]");
+			// add a template
+		Template template = pageSchema.getDefaultTemplate();
+		template.addField("siteurl", "siteurl","URL","size=80");
+		template.addField("wikid", "wikiId","Text", "size=40");
 		// update the schema on the given wiki
 		pageSchema.update(this.getWiki());
 	}

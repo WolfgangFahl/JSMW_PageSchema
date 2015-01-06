@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  */
 // http://blog.bdoughan.com/2011/06/using-jaxbs-xmlaccessortype-to.html
 @XmlAccessorType(XmlAccessType.NONE)
-public class SchemaItem {
+public abstract class SchemaItem {
 	protected boolean debug=true;
 	protected static Logger LOGGER = Logger
 			.getLogger("org.mediawiki.smw.pageschemas");
@@ -168,6 +168,16 @@ public class SchemaItem {
 	  noteContent+"\n"+
 	  "end note\n";
 	  return result;
+	}
+	
+	/**
+	 * get my local uml content
+	 * @return
+	 */
+	public
+	// abstract 
+	String getUmlContent() {
+		return "";
 	}
 	
 	/**

@@ -15,6 +15,7 @@ package org.mediawiki.smw.pageschemas;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.bind.annotation.XmlElement;
 
@@ -41,8 +42,17 @@ public class FormInput extends SchemaItem {
 		String[] params=paramlist.split(",");
 		for (String paramElement:params) {
 			String[] paramElementParts = paramElement.split("=");
-			Parameter parameter=new Parameter(field,paramElementParts[0],paramElementParts[1]);
-			parameters.add(parameter);
+			if (paramElementParts.length<1) {
+				LOGGER.log(Level.WARNING,"invalid parameter "+paramElement);
+			} else {
+				String name=paramElementParts[0];
+				String value="";
+				if (paramElementParts.length>=2) {
+					value=paramElementParts[1];
+				}
+				Parameter parameter=new Parameter(field,name,value);
+				parameters.add(parameter);
+			}
 		}
 	}
 

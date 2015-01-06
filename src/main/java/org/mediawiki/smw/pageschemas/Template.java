@@ -112,5 +112,14 @@ public class Template extends SchemaItem {
 		return field;
 	}
 
+	@Override
+	public String getUmlContent() {
+		String result="";
+		for (Field field:this.getFields()) {
+			result+=field.getUmlContent();
+		}
+		return result;
+	}
+
 	
 }
