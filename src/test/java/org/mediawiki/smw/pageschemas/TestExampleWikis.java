@@ -21,8 +21,8 @@ public class TestExampleWikis extends BaseSchemaTest {
 		exampleWikiPageSchema.setWikiDocumentation("see [[ExampleWikis]]");
 			// add a template
 		Template template = exampleWikiPageSchema.getDefaultTemplate();
-		template.addField("siteurl", "siteurl","URL","size=80");
-		template.addField("wikid", "wikiId","Text", "size=40");
+		template.addField("siteurl", "siteurl","URL","size=80,mandatory=");
+		template.addField("wikid", "wikiId","Text", "size=40,mandatory=");
 		template.addField("mwversion", "Version","Text", "size=15");
 		template.addField("mwlogo", "Logo","URL", "size=100");
 		
@@ -33,7 +33,7 @@ public class TestExampleWikis extends BaseSchemaTest {
 		template = examplePagePageSchema.getDefaultTemplate();
 		template.addField("content", "Content","text","size=80");
 		template.addField("page", "Page","Page", "size=40");
-		template.addField("wiki", "wiki","ExampleWiki-Page", "size=40");
+		template.addLink("wiki", "wiki","ExampleWiki", "size=40",true);
 		template.addField("forEdit", "write access","Boolean", "size=15");	
 			
 		// update the schemas on the given wiki

@@ -61,7 +61,7 @@ public abstract class SchemaItem {
 	/**
 	 * @return the wikiDocumentation
 	 */
-	@XmlElement
+	//@XmlElement
 	public String getWikiDocumentation() {
 		return wikiDocumentation;
 	}
@@ -77,7 +77,7 @@ public abstract class SchemaItem {
 	/**
 	 * @return the umlDocumentation
 	 */
-	@XmlElement
+	//@XmlElement
 	public String getUmlDocumentation() {
 		return umlDocumentation;
 	}

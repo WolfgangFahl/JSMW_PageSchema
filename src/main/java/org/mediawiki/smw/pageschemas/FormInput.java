@@ -20,37 +20,43 @@ import java.util.logging.Level;
 import javax.xml.bind.annotation.XmlElement;
 
 public class FormInput extends SchemaItem {
-	String inputtype;
-  List<Parameter> parameters=new ArrayList<Parameter>();
 
-  /**
-   * default constructor to make JAXB happy
-   */
+	String inputtype;
+	// FIXME use and add test case
+	String description;
+	String descriptionToolTipMode;
+
+	List<Parameter> parameters = new ArrayList<Parameter>();
+
+	/**
+	 * default constructor to make JAXB happy
+	 */
 	public FormInput() {
 	}
-	
-  /**
-   * create a new Form Input for the given field
-   * @param field
-   * @param inputType
-   * @param paramlist 
-   */
+
+	/**
+	 * create a new Form Input for the given field
+	 * 
+	 * @param field
+	 * @param inputType
+	 * @param paramlist
+	 */
 	public FormInput(Field field, String inputType, String paramlist) {
 		this.setPageSchema(field.getPageSchema());
 		setInputType(inputType);
 		field.setFormInput(this);
-		String[] params=paramlist.split(",");
-		for (String paramElement:params) {
+		String[] params = paramlist.split(",");
+		for (String paramElement : params) {
 			String[] paramElementParts = paramElement.split("=");
-			if (paramElementParts.length<1) {
-				LOGGER.log(Level.WARNING,"invalid parameter "+paramElement);
+			if (paramElementParts.length < 1) {
+				LOGGER.log(Level.WARNING, "invalid parameter " + paramElement);
 			} else {
-				String name=paramElementParts[0];
-				String value="";
-				if (paramElementParts.length>=2) {
-					value=paramElementParts[1];
+				String name = paramElementParts[0];
+				String value = "";
+				if (paramElementParts.length >= 2) {
+					value = paramElementParts[1];
 				}
-				Parameter parameter=new Parameter(field,name,value);
+				Parameter parameter = new Parameter(field, name, value);
 				parameters.add(parameter);
 			}
 		}
@@ -59,32 +65,48 @@ public class FormInput extends SchemaItem {
 	/**
 	 * @return the type
 	 */
-	@XmlElement(name="InputType")
+	@XmlElement(name = "InputType")
 	public String getInputType() {
 		return inputtype;
 	}
 
 	/**
-	 * @param inputtype the type to set
+	 * @param inputtype
+	 *          the type to set
 	 */
 	public void setInputType(String inputtype) {
 		this.inputtype = inputtype;
 	}
-	
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description
+	 *          the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	/**
 	 * @return the parameters
 	 */
-	@XmlElement(name="Parameter")
+	@XmlElement(name = "Parameter")
 	public List<Parameter> getParameters() {
 		return parameters;
 	}
 
 	/**
-	 * @param parameters the parameters to set
+	 * @param parameters
+	 *          the parameters to set
 	 */
 	public void setParameters(List<Parameter> parameters) {
 		this.parameters = parameters;
 	}
-	
 
 }

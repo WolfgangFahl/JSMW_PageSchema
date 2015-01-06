@@ -24,9 +24,7 @@ public class TestXML {
 		parameter.setUmlDocumentation("umlDocumentation content");
 		String xml=parameter.asXML();
 		// System.out.println(xml);
-		String expected="<parameter name=\"name\">\n" + 
-				"   <umlDocumentation>umlDocumentation content</umlDocumentation>value<wikiDocumentation>wiki content</wikiDocumentation>\n" + 
-				"</parameter>";
+		String expected="<parameter name=\"name\">value</parameter>";
 		assertTrue(xml.contains(expected));
 	}
 	
@@ -67,43 +65,27 @@ public class TestXML {
     template.getFields().add(field2);
     
 		String xml=schema.asXML();
-		System.out.println(xml);
+		//System.out.println(xml);
 		String expected="<PageSchema>\n" + 
-				"   <wikiDocumentation></wikiDocumentation>\n" + 
-				"   <umlDocumentation></umlDocumentation>\n" + 
-				"   <semanticforms_Form name=\"City\">\n" + 
-				"      <umlDocumentation></umlDocumentation>\n" + 
-				"      <wikiDocumentation></wikiDocumentation>\n" + 
-				"   </semanticforms_Form>\n" + 
+				"   <semanticforms_Form name=\"City\"/>\n" + 
 				"   <Template name=\"City\" format=\"standard\">\n" + 
-				"      <umlDocumentation></umlDocumentation>\n" + 
-				"      <wikiDocumentation></wikiDocumentation>\n" + 
 				"      <Field name=\"Language\">\n" + 
-				"         <umlDocumentation></umlDocumentation>\n" + 
-				"         <wikiDocumentation></wikiDocumentation>\n" + 
 				"         <semanticforms_FormInput>\n" + 
-				"            <umlDocumentation></umlDocumentation>\n" + 
-				"            <wikiDocumentation></wikiDocumentation>\n" + 
 				"            <InputType>text</InputType>\n" + 
-				"            <Parameter name=\"size\">\n" + 
-				"               <umlDocumentation></umlDocumentation>20<wikiDocumentation></wikiDocumentation>\n" + 
-				"            </Parameter>\n" + 
+				"            <Parameter name=\"size\">20</Parameter>\n" + 
 				"         </semanticforms_FormInput>\n" + 
 				"         <Label>Pop.</Label>\n" + 
 				"      </Field>\n" + 
 				"      <Field>\n" + 
-				"         <umlDocumentation></umlDocumentation>\n" + 
-				"         <wikiDocumentation></wikiDocumentation>\n" + 
 				"         <semanticmediawiki_Property name=\"population\">\n" + 
-				"            <umlDocumentation></umlDocumentation>\n" + 
-				"            <wikiDocumentation></wikiDocumentation>\n" + 
 				"            <AllowedValue>de</AllowedValue>\n" + 
 				"            <AllowedValue>en</AllowedValue>\n" + 
 				"            <Type>Text</Type>\n" + 
 				"         </semanticmediawiki_Property>\n" + 
 				"      </Field>\n" + 
 				"   </Template>\n" + 
-				"</PageSchema>";
+				"</PageSchema>\n" + 
+				"";
 		assertTrue(xml.contains(expected));
 	}
 

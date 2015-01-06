@@ -106,7 +106,7 @@ public class Field extends SchemaItem {
 		// FIXME this is a link - make this conceptually clear (e.g. via interface
 		// or mapping?)
 		if (this.category == null) {
-			result = this.formInput.inputtype + " " + this.getLabel() + "\n";
+			result = this.property.type + " " + this.getLabel() + "\n";
 		} else {
 			if (debug)
 				LOGGER.log(Level.INFO, "field " + this.getName() + " is a link to "

@@ -30,15 +30,15 @@ public class TestCity extends BaseSchemaTest {
 	  Template cityTemplate = cityPageSchema.getDefaultTemplate();
 	  cityTemplate.addField("name","local Name","Text","size=80");
 	  Field pop=cityTemplate.addField("Population", "Pop.","Number","size=20,mandatory=");
-	  cityTemplate.addField("Country", "Country","Country-Page","size=50,mandatory=");
-	  cityTemplate.addField("Mayor", "Mayor","Mayor-Page","size=80");
+	  cityTemplate.addLink("Country", "Country","Country","size=50",true);
+	  cityTemplate.addLink("Mayor", "Mayor","Mayor","size=80",false);
 	  
 	  PageSchema mayorPageSchema=new PageSchema(psm,"Mayor");
 	  mayorPageSchema.setWikiDocumentation("");
 	  mayorPageSchema.setUmlDocumentation("I represent a Mayor like Willi Brandt");
 	  Template mayorTemplate = mayorPageSchema.getDefaultTemplate();
 	  mayorTemplate.addField("Name", "Name", "Text", "size=80");
-	  mayorTemplate.addField("mayorof", "Mayor of", "City-Page", "size=80");
+	  mayorTemplate.addLink("mayorof", "Mayor of", "City", "size=80",true);
 	  
 	  PageSchema countryPageSchema=new PageSchema(psm,"Country");
 	  countryPageSchema.setUmlDocumentation("I represent a Country like Germany, United States or Japan");

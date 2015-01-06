@@ -95,32 +95,82 @@ public class Template extends SchemaItem {
 		this.fields = fields;
 	}
 
+	class Link {
+		String roleName;
+		String category;
+		Field field;
+		boolean mandatory;
+	}
+	
+	/**
+	 * add a Link 
+	 * @param roleName
+	 * @param label
+	 * @param paramList
+	 * @param mandatory
+	 * @return
+	 */
+	public Link addLink(String roleName,String label,String category,String paramList,boolean mandatory) {
+		Link link=new Link();
+		link.mandatory=mandatory;
+		link.roleName=roleName;
+		link.category=category;
+		String delim="";
+		if (!"".equals(paramList.trim()))  {
+			delim=",";
+		}
+		paramList+=delim+"autocomplete on category="+category;
+		delim=",";
+		if (mandatory) {
+			paramList+=delim+"mandatory=";
+		}
+		Field field = this.addField(roleName, label, category+"-Page", "combobox", paramList);
+		link.field=field;
+		return link;
+	}
+	
+	/**
+	 * add the given field
+	 * @param name
+	 * @param label
+	 * @param type
+	 * @param paramList
+	 * @return
+	 */
+	public Field addField(String name, String label,  String type,
+			String paramList) {
+		String inputType=""; // and empty input type means: use default;
+		Field result=this.addField(name, label, type,inputType,paramList);
+		return result;
+	}
+	
 	/**
 	 * add a field to this template
 	 * @param name
 	 * @param label
+	 * @param type
 	 * @param inputType
 	 * @param paramList
 	 * @return
 	 */
-	public Field addField(String name, String label, String inputType,
+	public Field addField(String name, String label, String type, String inputType,
 		String paramList) {
  	  // add a field
 		Field field = new Field(this,name,label);
-		// FIXME workaround for typed pages
-		if (inputType.contains("-Page")) {
-			String[] parts = inputType.split("-");
+		// FIXME workaround for typed pages combine in a better way with link ...
+		if (type.contains("-Page")) {
+			String[] parts = type.split("-");
 			if (parts.length!=2) {
-				LOGGER.log(Level.SEVERE,"invalid inputType "+inputType);
+				LOGGER.log(Level.SEVERE,"invalid type "+type);
 			}	else {
 				field.category=parts[0];
-				inputType="Page";
+				type="Page";
 			}
 		}
 		FormInput formInput = new FormInput(field,inputType,paramList);
 		// FIXME Template name could be different then type name
 		// fix this.name here ...
-	  Property property=new Property(this.name+"_"+name,inputType);
+	  Property property=new Property(this.name+"_"+name,type);
 	  field.setProperty(property);
 
 		LOGGER.log(Level.FINE,"created FormInput"+formInput.name);

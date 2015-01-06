@@ -36,7 +36,8 @@ import com.bitplan.mediawiki.japi.MediawikiApi;
  */
 @XmlRootElement(name = "PageSchema")
 @XmlSeeAlso({SchemaItem.class})
-@XmlType(propOrder = { "wikiDocumentation","umlDocumentation","value","forms", "templates", "sections" })
+// "wikiDocumentation","umlDocumentation",
+@XmlType(propOrder = { "value","forms", "templates", "sections" })
 public class PageSchema extends SchemaItem {
 	private static final String VERSION = "0.0.2";
 
