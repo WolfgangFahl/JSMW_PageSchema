@@ -93,7 +93,7 @@ public class Field extends SchemaItem {
 
 	@Override
 	public String getUmlContent() {
-		String result=this.getLabel()+"\n";
+		String result=this.formInput.inputtype+" "+this.getLabel()+"\n";
 	  return result;
 	}
 	

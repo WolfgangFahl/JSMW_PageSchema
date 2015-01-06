@@ -28,6 +28,7 @@ public class TestCity extends BaseSchemaTest {
 	  cityPageSchema.setUmlDocumentation("I represent a City like Berlin, New York or Tokyo");
 	  Template cityTemplate = cityPageSchema.getDefaultTemplate();
 	  cityTemplate.addField("Population", "Pop.","Number","size=20,mandatory=");
+	  cityTemplate.addField("Country", "Country","Page","size=50,mandatory=");
 		// update the schema on the given wiki
 		cityPageSchema.update(this.getWiki());
 	}

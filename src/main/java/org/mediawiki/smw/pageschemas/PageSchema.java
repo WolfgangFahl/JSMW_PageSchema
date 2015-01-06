@@ -164,12 +164,20 @@ public class PageSchema extends SchemaItem {
 	public String asPlantUml() {
 		String content = getUmlTitle("PageSchema " + this.category);
 		content += getUmlNote(category + "DiagramNote", "Copyright (c) 2015 BITPlan GmbH");
-		content += getUmlClass(this.category,"");
+		String classContent="";
 		for (Template template:this.getTemplates()) {
-			content+=template.getUmlContent();
+			classContent+=template.getUmlContent();
 		}
+		content += getUmlClass(this.category,classContent);
+		content += "hide "+getSpot()+" circle\n";
 		String result = super.asPlantUml(content);
 		return result;
+	}
+	
+	public String getSpot() {
+		// << (S,#FF7700) Singleton >>
+		String spot=" <<Category>>";
+		return spot;
 	}
 
 	/**
@@ -182,11 +190,10 @@ public class PageSchema extends SchemaItem {
 	protected String getUmlClass(String className, String classContent) {
 		// FIXME top of "+className
 		// http://plantuml.sourceforge.net/classes.html
-		// << (S,#FF7700) Singleton >>
-		String spot=" <<Category>>";
+	
 		String classNote=getUmlNote(className+"Note ",this.umlDocumentation);
 		classNote+=className+"Note .."+className+"\n";
-		String result = classNote+"Class " + className + spot+" {\n" + classContent + "\n"
+		String result = classNote+"Class " + className + getSpot()+" {\n" + classContent + "\n"
 				+ "}\n";
 		return result;
 	}

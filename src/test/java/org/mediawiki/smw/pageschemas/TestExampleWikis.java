@@ -21,6 +21,9 @@ public class TestExampleWikis extends BaseSchemaTest {
 		Template template = pageSchema.getDefaultTemplate();
 		template.addField("siteurl", "siteurl","URL","size=80");
 		template.addField("wikid", "wikiId","Text", "size=40");
+		template.addField("mwversion", "Version","Text", "size=15");
+		template.addField("mwlogo", "Logo","URL", "size=100");
+		
 		// update the schema on the given wiki
 		pageSchema.update(this.getWiki());
 	}

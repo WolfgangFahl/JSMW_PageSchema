@@ -47,11 +47,20 @@ public class TestPageSchema extends BaseSchemaTest {
 		formTemplate.addField("pageschema","Schema","Page","size=80");
 		formPageSchema.update(this.getWiki());
 
+		PageSchema formInputPageSchema = new PageSchema("FormInput");
+		formInputPageSchema.setWikiDocumentation("the inputType can be any of [https://semantic-mediawiki.org/wiki/Help:List_of_datatypes Help:List_of_datatypes]");
+	  Template formInputTemplate=formInputPageSchema.getDefaultTemplate();
+	  formInputTemplate.addField("field", "Form", "Page", "size=80");
+	  formInputPageSchema.update(this.getWiki());
+	  
 		PageSchema fieldPageSchema = new PageSchema("Field");
+		fieldPageSchema.setWikiDocumentation("https://semantic-mediawiki.org/wiki/Help:List_of_datatypes");
+		fieldPageSchema.setUmlDocumentation("");
 		Template fieldTemplate=fieldPageSchema.getDefaultTemplate();
 		fieldTemplate.addField("name","Name","Text","size=80");
 		fieldTemplate.addField("label","Label","Text","size=80");
 		fieldTemplate.addField("form","Form","Page","size=80");
+	  formTemplate.addField("formInput", "FormInput", "Page", "size=80");
 		fieldPageSchema.update(this.getWiki());
 	}
 	
