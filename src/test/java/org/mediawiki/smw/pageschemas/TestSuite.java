@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ TestWiki.class, TestXML.class,
-		TestPageSchema.class, TestExampleWikis.class, TestCity.class})
+		TestPageSchema.class, TestExampleWikis.class, TestCity.class, TestFAQ.class})
 public class TestSuite {
 
 }

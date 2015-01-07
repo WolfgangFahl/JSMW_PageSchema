@@ -40,6 +40,15 @@ import com.bitplan.mediawiki.japi.MediawikiApi;
 @XmlType(propOrder = { "value","forms", "templates", "sections" })
 public class PageSchema extends SchemaItem {
 	private static final String VERSION = "0.0.2";
+	
+	/**
+	 * get the link to JSMW
+	 * @return
+	 */
+	private static final String getJSMW_Link() {
+	  String link="[https://github.com/WolfgangFahl/JSMW_PageSchema JSMW_PageSchema Version "+VERSION+"]";
+	  return link;
+	}
 
 	List<Template> templates = new ArrayList<Template>();
 	List<Form> forms = new ArrayList<Form>();
@@ -157,16 +166,18 @@ public class PageSchema extends SchemaItem {
 			LOGGER.log(Level.INFO, xml);
 
 		String content = "\n[[Category:PageSchema]]\n"
-				+ "This Category has been generated with JSMW_PageSchema Version "
-				+ VERSION + " at " + wiki.getIsoTimeStamp() + "<br>\n"
-				+ "It has the template: [[:Template:" + this.category + "]]<br>\n"
-				+ "And the form: [[:Form:" + this.category + "]]<br>\n" + "";
+				+ "This Category has been generated with "+getJSMW_Link()
+				+ " at " + wiki.getIsoTimeStamp() + "<br>\n"
+				+ "The following results are based on it: \n"
+		    + "* [[:Category:" + this.category + "]]<br>\n"
+		    + "* [[:Template:" + this.category + "]]<br>\n"
+				+ "* [[:Form:" + this.category + "]]<br>\n" + "";
 
 		String text = xml + content + this.wikiDocumentation + "<br>\n";
 		for (PageSchema linkedSchema:linkedSchemas) {
 			text+="* see also [[:Category:"+linkedSchema.category+"]]\n";
 		}
-		text+=this.asPlantUml(linkedSchemas);
+		text+="=== UML diagram for "+this.category+" PageSchema===\n"+this.asPlantUml(linkedSchemas);
 
 		String summary = "modified by JSMW_PageSchema at " + wiki.getIsoTimeStamp();
 		// wiki.setDebug(true);
@@ -188,7 +199,7 @@ public class PageSchema extends SchemaItem {
 	 * return me as an uml diagram
 	 */
 	public String asPlantUml(List<PageSchema> linkedSchemas) {
-		String content = getUmlTitle("PageSchema " + this.category);
+		String content = getUmlTitle(this.category);
 		String note = "";
 		content += getUmlNote(category + "DiagramNote", getCopyright() + note);
 		String classContent = "";
@@ -241,6 +252,19 @@ public class PageSchema extends SchemaItem {
 		// add a template
 		Template template = new Template(form, this.category, "standard");
 		return template;
+	}
+
+	/**
+	 * set the wikiDocumentation appending some example source in the given language
+	 * @param wikiDocumentation
+	 * @param exampleSource
+	 * @param lang
+	 * @param title 
+	 */
+	public void setWikiDocumentation(String wikiDocumentation,
+			String exampleSource, String lang, String title) {
+	  String header="This example source code works with "+getJSMW_Link()+"\n";
+		this.setWikiDocumentation(wikiDocumentation+header+"\n"+title+"\n<br><source lang='"+lang+"'>"+exampleSource+"</source>");
 	}
 
 }

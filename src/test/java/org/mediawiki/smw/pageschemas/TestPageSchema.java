@@ -37,22 +37,45 @@ public class TestPageSchema extends BaseSchemaTest {
 		Template formTemplate=formPageSchema.getDefaultTemplate();
 		formTemplate.addField("createtitle","create Title","Text","size=80");
 		formTemplate.addField("edittitle","edit Title","Text","size=80");
-		formTemplate.addField("pageschema","Schema","PageSchema-Page","size=80");
+		formTemplate.addLink("pageschema","Schema","PageSchema","size=80",true);
+		
+		PageSchema templatePageSchema = new PageSchema(psm,"Template");
+		Template templateTemplate=templatePageSchema.getDefaultTemplate();
+		templateTemplate.addField("multiple","multiple","Text","size=80");
+		templateTemplate.addField("format","format","Text","size=80");
+		templateTemplate.addLink("pageschema","Schema","PageSchema","size=80",true);
+		
+		templateTemplate.setWikiDocumentation("see https://semantic-mediawiki.org/wiki/Help:Semantic_templates");
+		templateTemplate.setUmlDocumentation("I am a template and have a list of fields");
 
 		PageSchema formInputPageSchema = new PageSchema(psm,"FormInput");
-		formInputPageSchema.setWikiDocumentation("the inputType can be any of [https://semantic-mediawiki.org/wiki/Help:List_of_datatypes Help:List_of_datatypes]");
 	  Template formInputTemplate=formInputPageSchema.getDefaultTemplate();
-	  formInputTemplate.addField("field", "Form", "Form-Page", "size=80");
+	  // FIXME add allowed values here 
+		formInputTemplate.addField("inputType","inputType","Text","size=80");
+	  formInputTemplate.addLink("field", "Field", "Field", "size=80",true);
+
+		formInputPageSchema.setWikiDocumentation("the inputType can be according to <br>see [https://www.mediawiki.org/wiki/Extension:Semantic_Forms/Defining_forms#Allowed_input_types_for_data_types allowed input types] or <br>any of [https://www.mediawiki.org/wiki/Extension:Semantic_Forms_Inputs Semantic Form Inputs]");
+		formInputPageSchema.setUmlDocumentation("I am a userinterface control to add input for a template field");
+		
+		PageSchema propertyPageSchema = new PageSchema(psm,"Property");
+	  Template propertyTemplate=propertyPageSchema.getDefaultTemplate();
+	  // FIXME add allowed values here and make it a drop down box
+		propertyTemplate.addField("type","type","Text","size=80");
+	  propertyTemplate.addLink("formInput", "formInput", "FormInput", "size=80",true);
+
+		propertyPageSchema.setWikiDocumentation("the type can be any of [https://semantic-mediawiki.org/wiki/Help:List_of_datatypes Help:List_of_datatypes]");
 	  
 		PageSchema fieldPageSchema = new PageSchema(psm,"Field");
-		fieldPageSchema.setUmlDocumentation("a container for single piece of data");
-		fieldPageSchema.setWikiDocumentation("the name of the field will also be a property name so please make sure you follow the rules for [https://www.mediawiki.org/wiki/Manual:Page_title page titles]");
 		Template fieldTemplate=fieldPageSchema.getDefaultTemplate();
 		fieldTemplate.addField("name","Name","Text","size=80");
 		fieldTemplate.addField("label","Label","Text","size=80");
-		fieldTemplate.addField("form","Form","Page","size=80");
-	  fieldTemplate.addField("formInput", "FormInput", "FormInput-Page", "size=80");
-	  
+		fieldTemplate.addLink("form","Form","Form","size=80",true);
+	  fieldTemplate.addLink("template", "Template", "Template", "size=80",true);
+	  fieldTemplate.addLink("formInput", "FormInput", "FormInput", "size=80",true);
+
+		fieldPageSchema.setUmlDocumentation("a container for a single piece of data");
+		fieldPageSchema.setWikiDocumentation("the name of the field will also be used to derive a property name so please make sure you follow the rules for [https://www.mediawiki.org/wiki/Manual:Page_title page titles]");
+
 	  // create Schemas
 		psm.update(this.getWiki());
 	}
