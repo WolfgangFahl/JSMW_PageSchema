@@ -46,7 +46,7 @@ public abstract class SchemaItem {
 	@XmlTransient
 	PageSchema pageSchema;
 
-	
+	String pluralName;
 	String name;
 	String value;
 	
@@ -57,6 +57,22 @@ public abstract class SchemaItem {
 	// FIXME - ask Yaron to add these
 	String wikiDocumentation = "";
 	String umlDocumentation = "";
+
+	/**
+	 * default constructor to make java and jaxb happy
+	 */
+	public SchemaItem() {
+		
+	}
+	
+	/**
+	 * construct me with the given name
+	 * @param name
+	 */
+	public SchemaItem(String name) {
+		this.name=name;
+		this.pluralName=name+"s";
+	}
 
 	/**
 	 * @return the wikiDocumentation
@@ -108,6 +124,21 @@ public abstract class SchemaItem {
 	 */
 	protected void setPageSchema(PageSchema pageSchema) {
 		this.pageSchema = pageSchema;
+	}
+
+	/**
+	 * @return the pluralName
+	 */
+	@XmlAttribute
+	public String getPluralName() {
+		return pluralName;
+	}
+
+	/**
+	 * @param pluralName the pluralName to set
+	 */
+	public void setPluralName(String pluralName) {
+		this.pluralName = pluralName;
 	}
 
 	/**

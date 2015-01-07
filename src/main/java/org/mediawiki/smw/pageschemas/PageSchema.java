@@ -35,19 +35,21 @@ import com.bitplan.mediawiki.japi.MediawikiApi;
  * @author wf
  */
 @XmlRootElement(name = "PageSchema")
-@XmlSeeAlso({SchemaItem.class})
+@XmlSeeAlso({ SchemaItem.class })
 // "wikiDocumentation","umlDocumentation",
-@XmlType(propOrder = { "value","forms", "templates", "sections" })
+@XmlType(propOrder = { "value", "forms", "templates", "sections" })
 public class PageSchema extends SchemaItem {
 	private static final String VERSION = "0.0.2";
-	
+
 	/**
 	 * get the link to JSMW
+	 * 
 	 * @return
 	 */
 	private static final String getJSMW_Link() {
-	  String link="[https://github.com/WolfgangFahl/JSMW_PageSchema JSMW_PageSchema Version "+VERSION+"]";
-	  return link;
+		String link = "[https://github.com/WolfgangFahl/JSMW_PageSchema JSMW_PageSchema Version "
+				+ VERSION + "]";
+		return link;
 	}
 
 	List<Template> templates = new ArrayList<Template>();
@@ -67,6 +69,7 @@ public class PageSchema extends SchemaItem {
 	 * @param category
 	 */
 	public PageSchema(String category) {
+		super(category);
 		this.category = category;
 	}
 
@@ -147,14 +150,15 @@ public class PageSchema extends SchemaItem {
 		PageSchema result = (PageSchema) u.unmarshal(xmlReader);
 		return result;
 	}
-	
+
 	/**
 	 * update Me on the given wiki must be already logged in
 	 * 
 	 * @param wiki
 	 * @throws Exception
 	 */
-	public void update(MediawikiApi wiki,List<PageSchema> linkedSchemas ) throws Exception {
+	public void update(MediawikiApi wiki, List<PageSchema> linkedSchemas)
+			throws Exception {
 		if (this.category == null)
 			throw new Exception("the category of the schema must be set!");
 		LOGGER.log(Level.INFO, "updating PageSchema for " + this.category + " on "
@@ -166,22 +170,52 @@ public class PageSchema extends SchemaItem {
 			LOGGER.log(Level.INFO, xml);
 
 		String content = "\n[[Category:PageSchema]]\n"
-				+ "This Category has been generated with "+getJSMW_Link()
-				+ " at " + wiki.getIsoTimeStamp() + "<br>\n"
-				+ "The following results are based on it: \n"
-		    + "* [[:Category:" + this.category + "]]<br>\n"
-		    + "* [[:Template:" + this.category + "]]<br>\n"
-				+ "* [[:Form:" + this.category + "]]<br>\n" + "";
+				+ "This Category has been generated with " + getJSMW_Link() + " at "
+				+ wiki.getIsoTimeStamp() + "<br>\n"
+				+ "The following results are based on it: \n" + "* [[:Category:"
+				+ this.category + "]]<br>\n" + "* [[:Template:" + this.category
+				+ "]]<br>\n" + "* [[:Form:" + this.category + "]]<br>\n" + "";
 
 		String text = xml + content + this.wikiDocumentation + "<br>\n";
-		for (PageSchema linkedSchema:linkedSchemas) {
-			text+="* see also [[:Category:"+linkedSchema.category+"]]\n";
+		for (PageSchema linkedSchema : linkedSchemas) {
+			text += "* see also [[:Category:" + linkedSchema.category + "]]\n";
 		}
-		text+="=== UML diagram for "+this.category+" PageSchema===\n"+this.asPlantUml(linkedSchemas);
+		text += "=== UML diagram for " + this.category + " PageSchema===\n"
+				+ this.asPlantUml(linkedSchemas);
 
 		String summary = "modified by JSMW_PageSchema at " + wiki.getIsoTimeStamp();
 		// wiki.setDebug(true);
 		wiki.edit(pageTitle, text, summary);
+		
+		// create list of Category Pages
+		String listPageTitle = "List of " + super.getPluralName();
+		Field linkField = null; // field to link Page to categories -
+		// query expects non null value (pseudo-primary key ...)
+		// could be null after the following search if no mandatory field is
+		// specified
+		String queryfields = "";
+		for (Template template : this.templates) {
+			for (Field field : template.fields) {
+				for (Parameter param : field.formInput.parameters) {
+					if ("mandatory".equals(param.name.toLowerCase())) {
+						if (linkField == null)
+							linkField = field;
+						queryfields += "| ?" + category + " " + field.name + "\n";
+					}
+				}
+			}
+		}
+		if (linkField == null) {
+			LOGGER.log(Level.WARNING, "no mandatory field specified for Category "
+					+ this.category);
+		} else {
+			String listPageText = "{{#ask: [[Category:" + category + "]] [["
+					+ category + " "+linkField.getName()+"::+]]\n" 
+					+ queryfields
+					+ "}}\n"
+					+ "[[Category:" + category + "]]\n" + "";
+			wiki.edit(listPageTitle, listPageText, summary);
+		}
 	}
 
 	/**
@@ -207,8 +241,8 @@ public class PageSchema extends SchemaItem {
 			classContent += template.getUmlContent();
 		}
 		content += getUmlClass(this.category, classContent);
-		for (PageSchema linkedSchema:linkedSchemas) {
-			content+=category+" -- "+linkedSchema.category+"\n";
+		for (PageSchema linkedSchema : linkedSchemas) {
+			content += category + " -- " + linkedSchema.category + "\n";
 		}
 		content += "hide " + getSpot() + " circle\n";
 		String result = super.asPlantUml(content);
@@ -255,16 +289,20 @@ public class PageSchema extends SchemaItem {
 	}
 
 	/**
-	 * set the wikiDocumentation appending some example source in the given language
+	 * set the wikiDocumentation appending some example source in the given
+	 * language
+	 * 
 	 * @param wikiDocumentation
 	 * @param exampleSource
 	 * @param lang
-	 * @param title 
+	 * @param title
 	 */
 	public void setWikiDocumentation(String wikiDocumentation,
 			String exampleSource, String lang, String title) {
-	  String header="This example source code works with "+getJSMW_Link()+"\n";
-		this.setWikiDocumentation(wikiDocumentation+header+"\n"+title+"\n<br><source lang='"+lang+"'>"+exampleSource+"</source>");
+		String header = "This example source code works with " + getJSMW_Link()
+				+ "\n";
+		this.setWikiDocumentation(wikiDocumentation + header + "\n" + title
+				+ "\n<br><source lang='" + lang + "'>" + exampleSource + "</source>");
 	}
 
 }

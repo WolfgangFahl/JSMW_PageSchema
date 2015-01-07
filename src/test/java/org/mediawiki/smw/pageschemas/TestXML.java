@@ -65,14 +65,14 @@ public class TestXML {
     template.getFields().add(field2);
     
 		String xml=schema.asXML();
-		//System.out.println(xml);
+		System.out.println(xml);
 		String expected="<PageSchema>\n" + 
 				"   <semanticforms_Form name=\"City\"/>\n" + 
 				"   <Template name=\"City\" format=\"standard\">\n" + 
 				"      <Field name=\"Language\">\n" + 
 				"         <semanticforms_FormInput>\n" + 
 				"            <InputType>text</InputType>\n" + 
-				"            <Parameter name=\"size\">20</Parameter>\n" + 
+				"            <Parameter name=\"size\" pluralName=\"sizes\">20</Parameter>\n" + 
 				"         </semanticforms_FormInput>\n" + 
 				"         <Label>Pop.</Label>\n" + 
 				"      </Field>\n" + 
@@ -84,8 +84,7 @@ public class TestXML {
 				"         </semanticmediawiki_Property>\n" + 
 				"      </Field>\n" + 
 				"   </Template>\n" + 
-				"</PageSchema>\n" + 
-				"";
+				"</PageSchema>";
 		assertTrue(xml.contains(expected));
 	}
 

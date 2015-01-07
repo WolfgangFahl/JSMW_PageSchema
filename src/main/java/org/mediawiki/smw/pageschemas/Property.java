@@ -27,7 +27,7 @@ public class Property extends SchemaItem {
 	 * @param type
 	 */
 	public Property(String name,String type) {
-		this.name=name;
+		super(name);
 		this.type=type;
 	}
 	

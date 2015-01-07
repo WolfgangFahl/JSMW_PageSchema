@@ -37,8 +37,8 @@ public class Form extends SchemaItem {
 	 * @param title
 	 */
 	public Form(PageSchema pageSchema, String title) {
+		super(title);
 		setPageSchema(pageSchema);
-		setName(title);
 		getPageSchema().forms.add(this);
 	}
 	

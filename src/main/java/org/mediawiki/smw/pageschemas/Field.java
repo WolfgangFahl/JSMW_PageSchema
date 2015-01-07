@@ -34,9 +34,9 @@ public class Field extends SchemaItem {
 	 * @param label
 	 */
 	public Field(Template template, String name, String label) {
+		super(name);
 		this.template = template;
 		this.setPageSchema(template.getPageSchema());
-		setName(name);
 		setLabel(label);
 		template.getFields().add(this);
 	}

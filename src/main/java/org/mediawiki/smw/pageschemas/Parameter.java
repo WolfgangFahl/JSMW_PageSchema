@@ -12,8 +12,6 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Parameter extends SchemaItem {
 	@XmlTransient Field field;
 	
-	
-
 	/**
 	 * default constructor to make JAXB happy
 	 */
@@ -26,9 +24,9 @@ public class Parameter extends SchemaItem {
 	 * @param value
 	 */
 	public Parameter(Field field, String name, String value) {
+		super(name);
 		this.field=field;
 		setPageSchema(field.getPageSchema());
-		this.name=name;
 		this.value=value;
 	}
 

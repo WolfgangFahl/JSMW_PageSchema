@@ -44,9 +44,9 @@ public class Template extends SchemaItem {
 	 * @param format
 	 */
 	public Template(Form form, String name, String format) {
+		super(name);
 		this.form=form;
 		setPageSchema(form.getPageSchema());
-		setName(name);
 		setFormat(format);
 		getPageSchema().templates.add(this);
 	}

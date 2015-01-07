@@ -25,6 +25,7 @@ public class TestCity extends BaseSchemaTest {
 	public void testCitiesPageSchema() throws Exception {
 		PageSchemaManager psm=new PageSchemaManager();
 	  PageSchema cityPageSchema=new PageSchema(psm,"City");
+	  cityPageSchema.setPluralName("Cities");
 	  cityPageSchema.setWikiDocumentation("see [https://www.mediawiki.org/wiki/Extension:Page_Schemas#Sample%20XML%20Structure Semantic Page Schemas sample xml structure]\n"+
 	   	  "<br>Systematic information on cities (called settlments there) is available on wikipedia\n"+
 	  	  "Example for [https://en.wikipedia.org/w/index.php?title=New_York_City New York]: <pre>"+
