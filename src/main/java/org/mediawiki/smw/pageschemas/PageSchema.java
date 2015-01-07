@@ -186,7 +186,7 @@ public class PageSchema extends SchemaItem {
 		String summary = "modified by JSMW_PageSchema at " + wiki.getIsoTimeStamp();
 		// wiki.setDebug(true);
 		wiki.edit(pageTitle, text, summary);
-		
+
 		// create list of Category Pages
 		String listPageTitle = "List of " + super.getPluralName();
 		Field linkField = null; // field to link Page to categories -
@@ -200,10 +200,10 @@ public class PageSchema extends SchemaItem {
 					if ("mandatory".equals(param.name.toLowerCase())) {
 						if (linkField == null) {
 							linkField = field;
-						}
-					}
-					queryfields += "| ?" + category + " " + field.name + "\n";
-				}
+						} // if linkfield
+					} // mandatory
+				} // for param
+				queryfields += "| ?" + category + " " + field.name + "\n";
 			}
 		}
 		if (linkField == null) {
@@ -211,10 +211,8 @@ public class PageSchema extends SchemaItem {
 					+ this.category);
 		} else {
 			String listPageText = "{{#ask: [[Category:" + category + "]] [["
-					+ category + " "+linkField.getName()+"::+]]\n" 
-					+ queryfields
-					+ "}}\n"
-					+ "[[Category:" + category + "]]\n" + "";
+					+ category + " " + linkField.getName() + "::+]]\n" + queryfields
+					+ "}}\n" + "[[Category:" + category + "]]\n" + "";
 			wiki.edit(listPageTitle, listPageText, summary);
 		}
 	}
