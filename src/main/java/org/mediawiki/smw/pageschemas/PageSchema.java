@@ -198,10 +198,11 @@ public class PageSchema extends SchemaItem {
 			for (Field field : template.fields) {
 				for (Parameter param : field.formInput.parameters) {
 					if ("mandatory".equals(param.name.toLowerCase())) {
-						if (linkField == null)
+						if (linkField == null) {
 							linkField = field;
-						queryfields += "| ?" + category + " " + field.name + "\n";
+						}
 					}
+					queryfields += "| ?" + category + " " + field.name + "\n";
 				}
 			}
 		}

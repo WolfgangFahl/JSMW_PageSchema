@@ -20,7 +20,7 @@ public class TestFAQ extends BaseSchemaTest {
     PageSchema faqPageSchema = new PageSchema(psm, "FAQ");
 
     Template faqTemplate = faqPageSchema.getDefaultTemplate();
-    faqTemplate.addField("question", "Question", "Text", "size=5000");
+    faqTemplate.addField("question", "Question", "Text", "size=5000,mandatory=");
     faqTemplate.addField("askedOn", "asked on", "Date", "size=12");
     faqTemplate.addField("askedBy", "asked by", "Page", "ComboBox", "size=80");
     faqTemplate.addField("answer", "Answer", "Text", "size=5000");
