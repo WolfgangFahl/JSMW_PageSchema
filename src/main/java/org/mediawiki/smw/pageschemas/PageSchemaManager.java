@@ -61,6 +61,8 @@ public class PageSchemaManager {
 			}
 			pageSchema.update(wiki,allLinkedSchemas);
 		}
+		LOGGER.log(Level.INFO,"Done");
 	}
+	
 	
 }
