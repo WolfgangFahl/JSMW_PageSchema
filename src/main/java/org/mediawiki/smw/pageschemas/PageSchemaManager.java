@@ -33,6 +33,19 @@ public class PageSchemaManager {
 	Map<String,PageSchema> pageSchemas=new HashMap<String,PageSchema>();
 
 	/**
+	 * show a list of my pageSchemas for debugging
+	 * @return
+	 */
+	public void showDebugList() {
+		for (PageSchema ps:pageSchemas.values()) {
+			System.out.println(ps.getName());
+			System.out.println("uml: \n"+ps.getUmlDocumentation());
+			System.out.println("wiki: \n"+ps.getWikiDocumentation());
+			System.out.println();
+		}
+	}
+	
+	/**
 	 * lookup the schema with the given category
 	 * @param category
 	 * @return
