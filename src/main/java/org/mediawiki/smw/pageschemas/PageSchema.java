@@ -39,269 +39,362 @@ import com.bitplan.mediawiki.japi.MediawikiApi;
 // "wikiDocumentation","umlDocumentation",
 @XmlType(propOrder = { "value", "forms", "templates", "sections" })
 public class PageSchema extends SchemaItem {
-	private static final String VERSION = "0.0.2";
+  private static final String VERSION = "0.0.2";
 
-	/**
-	 * get the link to JSMW
-	 * 
-	 * @return
-	 */
-	private static final String getJSMW_Link() {
-		String link = "[https://github.com/WolfgangFahl/JSMW_PageSchema JSMW_PageSchema Version "
-				+ VERSION + "]";
-		return link;
-	}
+  /**
+   * get the link to JSMW
+   * 
+   * @return
+   */
+  private static final String getJSMW_Link() {
+    String link = "[https://github.com/WolfgangFahl/JSMW_PageSchema JSMW_PageSchema Version "
+        + VERSION + "]";
+    return link;
+  }
 
-	List<Template> templates = new ArrayList<Template>();
-	List<Form> forms = new ArrayList<Form>();
-	List<Section> sections = new ArrayList<Section>();
+  @XmlTransient
+  protected String source;
+  @XmlTransient
+  protected String sourceTitle;
+  @XmlTransient
+  protected String lang;
 
-	/**
-	 * default constructor to make JAXB happy
-	 */
-	public PageSchema() {
+  List<Template> templates = new ArrayList<Template>();
+  List<Form> forms = new ArrayList<Form>();
+  List<Section> sections = new ArrayList<Section>();
 
-	}
+  /**
+   * default constructor to make JAXB happy
+   */
+  public PageSchema() {
 
-	/**
-	 * create the PageSchema for the given category
-	 * 
-	 * @param category
-	 */
-	public PageSchema(String category) {
-		super(category);
-		this.category = category;
-	}
+  }
 
-	/**
-	 * create a pageSchema and add it to the given manager
-	 * 
-	 * @param psm
-	 * @param category
-	 */
-	public PageSchema(PageSchemaManager psm, String category) {
-		this(category);
-		psm.pageSchemas.put(category, this);
-	}
+  /**
+   * create the PageSchema for the given category
+   * 
+   * @param category
+   */
+  public PageSchema(String category) {
+    super(category);
+    this.category = category;
+  }
 
-	/**
-	 * @return the templates
-	 */
-	@XmlElement(name = "Template")
-	public List<Template> getTemplates() {
-		return templates;
-	}
+  /**
+   * create a pageSchema and add it to the given manager
+   * 
+   * @param psm
+   * @param category
+   */
+  public PageSchema(PageSchemaManager psm, String category) {
+    this(category);
+    psm.pageSchemas.put(category, this);
+  }
 
-	/**
-	 * @param templates
-	 *          the templates to set
-	 */
-	public void setTemplates(List<Template> templates) {
-		this.templates = templates;
-	}
+  /**
+   * @return the templates
+   */
+  @XmlElement(name = "Template")
+  public List<Template> getTemplates() {
+    return templates;
+  }
 
-	@XmlElement(name = "semanticforms_Form")
-	/**
-	 * @return the forms
-	 */
-	public List<Form> getForms() {
-		return forms;
-	}
+  /**
+   * @param templates
+   *          the templates to set
+   */
+  public void setTemplates(List<Template> templates) {
+    this.templates = templates;
+  }
 
-	/**
-	 * @param forms
-	 *          the forms to set
-	 */
-	public void setForms(List<Form> forms) {
-		this.forms = forms;
-	}
+  @XmlElement(name = "semanticforms_Form")
+  /**
+   * @return the forms
+   */
+  public List<Form> getForms() {
+    return forms;
+  }
 
-	/**
-	 * @return the sections
-	 */
-	@XmlElement(name = "Section")
-	public List<Section> getSections() {
-		return sections;
-	}
+  /**
+   * @param forms
+   *          the forms to set
+   */
+  public void setForms(List<Form> forms) {
+    this.forms = forms;
+  }
 
-	/**
-	 * @param sections
-	 *          the sections to set
-	 */
-	public void setSections(List<Section> sections) {
-		this.sections = sections;
-	}
+  /**
+   * @return the sections
+   */
+  @XmlElement(name = "Section")
+  public List<Section> getSections() {
+    return sections;
+  }
 
-	/**
-	 * create a PageSchema from an XML string
-	 * 
-	 * @param xml
-	 *          - xml representation of Page Schema
-	 * @return the PageSchema unmarshalled from the given xml
-	 * @throws JAXBException
-	 *           if there's something wrong with the xml input
-	 */
-	public static PageSchema fromXML(final String xml) throws JAXBException {
-		// unmarshal the xml message to the format to a W3CValidator Java object
-		JAXBContext context = JAXBContext.newInstance(PageSchema.class);
-		Unmarshaller u = context.createUnmarshaller();
-		StringReader xmlReader = new StringReader(xml);
-		// this step will convert from xml text to Java Object
-		PageSchema result = (PageSchema) u.unmarshal(xmlReader);
-		return result;
-	}
+  /**
+   * @param sections
+   *          the sections to set
+   */
+  public void setSections(List<Section> sections) {
+    this.sections = sections;
+  }
 
-	/**
-	 * update Me on the given wiki must be already logged in
-	 * 
-	 * @param wiki
-	 * @throws Exception
-	 */
-	public void update(MediawikiApi wiki, List<PageSchema> linkedSchemas)
-			throws Exception {
-		if (this.category == null)
-			throw new Exception("the category of the schema must be set!");
-		LOGGER.log(Level.INFO, "updating PageSchema for " + this.category + " on "
-				+ wiki.getSiteurl());
-		String xml = this.asXML();
-		String pageTitle = "Category:" + this.category;
-		xml = xml.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
-		if (debug)
-			LOGGER.log(Level.INFO, xml);
+  /**
+   * create a PageSchema from an XML string
+   * 
+   * @param xml
+   *          - xml representation of Page Schema
+   * @return the PageSchema unmarshalled from the given xml
+   * @throws JAXBException
+   *           if there's something wrong with the xml input
+   */
+  public static PageSchema fromXML(final String xml) throws JAXBException {
+    // unmarshal the xml message to the format to a W3CValidator Java object
+    JAXBContext context = JAXBContext.newInstance(PageSchema.class);
+    Unmarshaller u = context.createUnmarshaller();
+    StringReader xmlReader = new StringReader(xml);
+    // this step will convert from xml text to Java Object
+    PageSchema result = (PageSchema) u.unmarshal(xmlReader);
+    return result;
+  }
 
-		String content = "\n[[Category:PageSchema]]\n"
-				+ "This Category has been generated with " + getJSMW_Link() + " at "
-				+ wiki.getIsoTimeStamp() + "<br>\n"
-				+ "The following results are based on it: \n" + "* [[:Category:"
-				+ this.category + "]]<br>\n" + "* [[:Template:" + this.category
-				+ "]]<br>\n" + "* [[:Form:" + this.category + "]]<br>\n" + "";
+  /**
+   * Utility class for the ListPage
+   * 
+   * @author wf
+   *
+   */
+  public class ListPage {
+    private PageSchema pageSchema;
+    String title;
+    Field linkField;
+    private String queryfields;
+    List<Property> properties = new ArrayList<Property>();
 
-		String text = xml + content + this.wikiDocumentation + "<br>\n";
-		for (PageSchema linkedSchema : linkedSchemas) {
-			text += "* see also [[:Category:" + linkedSchema.category + "]]\n";
-		}
-		text += "=== UML diagram for " + this.category + " PageSchema===\n"
-				+ this.asPlantUml(linkedSchemas);
+    /**
+     * a List Page
+     * 
+     * @param pageSchema
+     */
+    public ListPage(PageSchema pageSchema) {
+      this.pageSchema = pageSchema;
+      init();
+    }
 
-		String summary = "modified by JSMW_PageSchema at " + wiki.getIsoTimeStamp();
-		// wiki.setDebug(true);
-		wiki.edit(pageTitle, text, summary);
+    /**
+     * check whether this list Page is available
+     * 
+     * @return
+     */
+    public boolean isAvailable() {
+      boolean result = linkField != null;
+      return result;
+    }
 
-		// create list of Category Pages
-		String listPageTitle = "List of " + super.getPluralName();
-		Field linkField = null; // field to link Page to categories -
-		// query expects non null value (pseudo-primary key ...)
-		// could be null after the following search if no mandatory field is
-		// specified
-		String queryfields = "";
-		for (Template template : this.templates) {
-			for (Field field : template.fields) {
-				for (Parameter param : field.formInput.parameters) {
-					if ("mandatory".equals(param.name.toLowerCase())) {
-						if (linkField == null) {
-							linkField = field;
-						} // if linkfield
-					} // mandatory
-				} // for param
-				queryfields += "| ?" + category + " " + field.name + "\n";
-			}
-		}
-		if (linkField == null) {
-			LOGGER.log(Level.WARNING, "no mandatory field specified for Category "
-					+ this.category);
-		} else {
-			String listPageText = "{{#ask: [[Category:" + category + "]] [["
-					+ category + " " + linkField.getName() + "::+]]\n" + queryfields
-					+ "}}\n" + "[[Category:" + category + "]]\n" + "";
-			wiki.edit(listPageTitle, listPageText, summary);
-		}
-	}
+    /**
+     * initialize me
+     */
+    public void init() {
+      // create list of Category Pages
+      title = "List of " + pageSchema.getPluralName();
+      linkField = null; // field to link Page to categories -
+      // query expects non null value (pseudo-primary key ...)
+      // could be null after the following search if no mandatory field is
+      // specified
+      queryfields = "";
+      for (Template template : pageSchema.templates) {
+        for (Field field : template.fields) {
+          if (field.getProperty() != null) {
+            properties.add(field.getProperty());
+          }
+          for (Parameter param : field.formInput.parameters) {
+            if ("mandatory".equals(param.name.toLowerCase())) {
+              if (linkField == null) {
+                linkField = field;
+              } // if linkfield
+            } // mandatory
+          } // for param
+          queryfields += "| ?" + category + " " + field.name + "\n";
+        }
+      }
+    }
 
-	/**
-	 * get the copyright
-	 * 
-	 * @return the copyright
-	 */
-	public String getCopyright() {
-		String result = "Copyright (c) 2015 BITPlan GmbH\n"
-				+ "[[http://www.bitplan.com]]";
-		return result;
-	}
+    /**
+     * get the Text for the listpage
+     * 
+     * @return
+     */
+    public String getText() {
+      String listPageText = "__NOCACHE__\n" + "{{#ask: [[Category:" + category
+          + "]] [[" + category + " " + linkField.getName() + "::+]]\n"
+          + queryfields + "}}\n" + "[[:Category:" + category + "]]\n" + "";
+      return listPageText;
+    }
+  }
 
-	/**
-	 * return me as an uml diagram
-	 */
-	public String asPlantUml(List<PageSchema> linkedSchemas) {
-		String content = getUmlTitle(this.category);
-		String note = "";
-		content += getUmlNote(category + "DiagramNote", getCopyright() + note);
-		String classContent = "";
-		for (Template template : this.getTemplates()) {
-			classContent += template.getUmlContent();
-		}
-		content += getUmlClass(this.category, classContent);
-		for (PageSchema linkedSchema : linkedSchemas) {
-			content += category + " -- " + linkedSchema.category + "\n";
-		}
-		content += "hide " + getSpot() + " circle\n";
-		String result = super.asPlantUml(content);
-		return result;
-	}
+  /**
+   * update Me on the given wiki must be already logged in
+   * 
+   * @param wiki
+   * @throws Exception
+   */
+  public void update(MediawikiApi wiki, List<PageSchema> linkedSchemas)
+      throws Exception {
+    if (this.category == null)
+      throw new Exception("the category of the schema must be set!");
+    LOGGER.log(Level.INFO, "updating PageSchema for " + this.category + " on "
+        + wiki.getSiteurl());
+    String xml = this.asXML();
+    String pageTitle = "Category:" + this.category;
+    xml = xml.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
+    if (debug)
+      LOGGER.log(Level.INFO, xml);
+    // create the listPage
+    ListPage listPage = new ListPage(this);
+    String listPageContent = "";
+    if (listPage.isAvailable()) {
+      listPageContent = "* [[" + listPage.title + "]]<br>\n";
+    }
+    String generated = "\n[[Category:PageSchema]]\n"
+        + "This Category has been generated with " + getJSMW_Link() + " at "
+        + wiki.getIsoTimeStamp() + "<br>\n";
+    String documentation = "\n=== Documentation ===\n" + this.wikiDocumentation
+        + "<br>\n";
+    documentation+="===Concept===\n{{Concept\n" + 
+        "|name="+this.getName()+"\n" + 
+        "}}\n";
+    for (PageSchema linkedSchema : linkedSchemas) {
+      documentation += "* see also [[:Category:" + linkedSchema.category
+          + "]]\n";
+    }
+    String uml = "=== UML ===\n" + this.asPlantUml(linkedSchemas);
 
-	public String getSpot() {
-		// << (S,#FF7700) Singleton >>
-		String spot = " <<Category>>";
-		return spot;
-	}
+    String links = "=== Links === \n" + "* [[:Category:" + this.category
+        + "]]<br>\n" + "* [[:Template:" + this.category + "]]<br>\n"
+        + "* [[:Form:" + this.category + "]]<br>\n" + listPageContent;
+    if (listPage.properties.size() > 0) {
+      String proplist = "====Properties ====\n";
+      for (Property property : listPage.properties) {
+        proplist += "* [[Property:" + property.getName() + "]]<br>\n";
+      }
+      links += "\n" + proplist;
+    }
 
-	/**
-	 * return me as an UML Class
-	 * 
-	 * @param className
-	 * @param classContent
-	 * @return
-	 */
-	@XmlTransient
-	protected String getUmlClass(String className, String classContent) {
-		// FIXME top of "+className
-		// http://plantuml.sourceforge.net/classes.html
+    String sourcedocumentation = this.getSourceDocumentation();
+    // What to display on the Wiki page
+    String text = xml + "\n" + uml + documentation + links
+        + sourcedocumentation + generated;
 
-		String classNote = getUmlNote(className + "Note ", this.umlDocumentation);
-		classNote += className + "Note .." + className + "\n";
-		String result = classNote + "Class " + className + getSpot() + " {\n"
-				+ classContent + "\n" + "}\n";
-		return result;
-	}
+    String summary = "modified by JSMW_PageSchema at " + wiki.getIsoTimeStamp();
+    // wiki.setDebug(true);
+    wiki.edit(pageTitle, text, summary);
 
-	/**
-	 * get the default Template
-	 * 
-	 * @return
-	 */
-	public Template getDefaultTemplate() {
-		// add a Form
-		Form form = new Form(this, this.category);
+    if (!listPage.isAvailable()) {
+      LOGGER.log(Level.WARNING, "no mandatory field specified for Category "
+          + this.category);
+    } else {
+      wiki.edit(listPage.title, listPage.getText(), summary);
+    }
+  }
 
-		// add a template
-		Template template = new Template(form, this.category, "standard");
-		return template;
-	}
+  /**
+   * get the copyright
+   * 
+   * @return the copyright
+   */
+  public String getCopyright() {
+    String result = "Copyright (c) 2015 BITPlan GmbH\n"
+        + "[[http://www.bitplan.com]]";
+    return result;
+  }
 
-	/**
-	 * set the wikiDocumentation appending some example source in the given
-	 * language
-	 * 
-	 * @param wikiDocumentation
-	 * @param exampleSource
-	 * @param lang
-	 * @param title
-	 */
-	public void setWikiDocumentation(String wikiDocumentation,
-			String exampleSource, String lang, String title) {
-		String header = "This example source code works with " + getJSMW_Link()
-				+ "\n";
-		this.setWikiDocumentation(wikiDocumentation + header + "\n" + title
-				+ "\n<br><source lang='" + lang + "'>" + exampleSource + "</source>");
-	}
+  /**
+   * return me as an uml diagram
+   */
+  public String asPlantUml(List<PageSchema> linkedSchemas) {
+    String content = getUmlTitle(this.category);
+    String note = "";
+    content += getUmlNote(category + "DiagramNote", getCopyright() + note);
+    String classContent = "";
+    for (Template template : this.getTemplates()) {
+      classContent += template.getUmlContent();
+    }
+    content += getUmlClass(this.category, classContent);
+    for (PageSchema linkedSchema : linkedSchemas) {
+      content += category + " -- " + linkedSchema.category + "\n";
+    }
+    content += "hide " + getSpot() + " circle\n";
+    String result = super.asPlantUml(content);
+    return result;
+  }
+
+  public String getSpot() {
+    // << (S,#FF7700) Singleton >>
+    String spot = " <<Category>>";
+    return spot;
+  }
+
+  /**
+   * return me as an UML Class
+   * 
+   * @param className
+   * @param classContent
+   * @return
+   */
+  @XmlTransient
+  protected String getUmlClass(String className, String classContent) {
+    // FIXME top of "+className
+    // http://plantuml.sourceforge.net/classes.html
+
+    String classNote = getUmlNote(className + "Note ", this.umlDocumentation);
+    classNote += className + "Note .. " + className + "\n";
+    String result = classNote + "Class " + className + getSpot() + " {\n"
+        + classContent + "\n" + "}\n";
+    return result;
+  }
+
+  /**
+   * get the default Template
+   * 
+   * @return
+   */
+  public Template getDefaultTemplate() {
+    // add a Form
+    Form form = new Form(this, this.category);
+
+    // add a template
+    Template template = new Template(form, this.category, "standard");
+    return template;
+  }
+
+  /**
+   * set the source documentation
+   * 
+   * @param source
+   * @param lang
+   * @param title
+   */
+  public void setSource(String source, String lang, String title) {
+    this.source = source;
+    this.lang = lang;
+    this.sourceTitle = title;
+  }
+
+  /**
+   * get the source documentation
+   * 
+   * @return the source documentation
+   */
+  @XmlTransient
+  public String getSourceDocumentation() {
+    String result = "";
+    String footer = "This example source code works with " + getJSMW_Link()
+        + "<br>\n";
+    if (source != null && !source.trim().equals("")) {
+      result = sourceTitle + "\n<br><source lang='" + lang + "'>" + source
+          + "</source>\n" + footer;
+    }
+    return result;
+  }
 
 }

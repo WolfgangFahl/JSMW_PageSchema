@@ -46,7 +46,8 @@ public class TestFAQ extends BaseSchemaTest {
         "\n" + 
         "    psm.update(this.getWiki());"; // paste source code here
     faqPageSchema
-        .setWikiDocumentation(wikiDocumentation, exampleSource, "java","=== Java Source code to generate FAQ Category ===");
+        .setWikiDocumentation(wikiDocumentation);
+    faqPageSchema.setSource(exampleSource, "java","=== Java Source code to generate FAQ Category ===");
     faqPageSchema
         .setUmlDocumentation("I represent a Frequently asked question");
 
