@@ -211,7 +211,8 @@ public abstract class SchemaItem {
 				+ "skinparam classFontColor black\n" + "skinparam classFontSize 12\n"
 				+ "skinparam classFontName Arial\n"
 				+ "skinparam NoteBorderColor #FF8000\n"
-				+ "skinparam NoteBackgroundColor #FFFFF0\n";
+				+ "skinparam NoteBackgroundColor #FFFFF0\n"
+				+ "hide circle";
 		return skinParams;
 	}
 

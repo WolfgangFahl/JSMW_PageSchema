@@ -323,7 +323,6 @@ public class PageSchema extends SchemaItem {
     for (PageSchema linkedSchema : linkedSchemas) {
       content += category + " -- " + linkedSchema.category + "\n";
     }
-    content += "hide " + getSpot() + " circle\n";
     String result = super.asPlantUml(content);
     return result;
   }
