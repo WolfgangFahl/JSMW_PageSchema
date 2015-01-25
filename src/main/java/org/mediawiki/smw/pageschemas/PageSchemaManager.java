@@ -32,12 +32,13 @@ public class PageSchemaManager {
   protected static Logger LOGGER = Logger
       .getLogger("org.mediawiki.smw.pageschemas");
   Map<String, PageSchema> pageSchemas = new HashMap<String, PageSchema>();
-  private MediawikiApi wiki;
+  protected MediawikiApi wiki;
 
   /**
    * @return the wiki
+   * @throws Exception 
    */
-  public MediawikiApi getWiki() {
+  public MediawikiApi getWiki() throws Exception {
     return wiki;
   }
 
