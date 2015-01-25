@@ -35,6 +35,20 @@ public class PageSchemaManager {
   private MediawikiApi wiki;
 
   /**
+   * @return the wiki
+   */
+  public MediawikiApi getWiki() {
+    return wiki;
+  }
+
+  /**
+   * @param wiki the wiki to set
+   */
+  public void setWiki(MediawikiApi wiki) {
+    this.wiki = wiki;
+  }
+
+  /**
    * show a list of my pageSchemas for debugging
    * 
    * @return
@@ -91,7 +105,7 @@ public class PageSchemaManager {
    * @param summary
    * @throws Exception
    */
-  protected void edit(String pageTitle, String text, String summary)
+  public void edit(String pageTitle, String text, String summary)
       throws Exception {
     wiki.edit(pageTitle, text, summary);
   }
