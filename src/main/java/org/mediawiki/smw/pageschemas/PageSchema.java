@@ -78,6 +78,7 @@ public class PageSchema extends SchemaItem {
   public PageSchema(String category) {
     super(category);
     this.category = category;
+    this.name=category;
   }
 
   /**
