@@ -62,6 +62,8 @@ public class PageSchema extends SchemaItem {
   List<Template> templates = new ArrayList<Template>();
   List<Form> forms = new ArrayList<Form>();
   List<Section> sections = new ArrayList<Section>();
+  @XmlTransient
+  private PageSchemaManager pageSchemaManager;
 
   /**
    * default constructor to make JAXB happy
@@ -90,6 +92,7 @@ public class PageSchema extends SchemaItem {
   public PageSchema(PageSchemaManager psm, String category) {
     this(category);
     psm.pageSchemas.put(category, this);
+    this.pageSchemaManager=psm;
   }
 
   /**
@@ -288,27 +291,14 @@ public class PageSchema extends SchemaItem {
 
     String summary = "modified by JSMW_PageSchema at " + wiki.getIsoTimeStamp();
     // wiki.setDebug(true);
-    edit(wiki,pageTitle, text, summary);
+    pageSchemaManager.edit(pageTitle, text, summary);
 
     if (!listPage.isAvailable()) {
       LOGGER.log(Level.WARNING, "no mandatory field specified for Category "
           + this.category);
     } else {
-      edit(wiki,listPage.title, listPage.getText(), summary);
+      pageSchemaManager.edit(listPage.title, listPage.getText(), summary);
     }
-  }
-
-  /**
-   * edit hook
-   * @param wiki
-   * @param pageTitle
-   * @param text
-   * @param summary
-   * @throws Exception 
-   */
-  protected void edit(MediawikiApi wiki, String pageTitle, String text,
-      String summary) throws Exception {
-    wiki.edit(pageTitle, text, summary);
   }
 
   /**
