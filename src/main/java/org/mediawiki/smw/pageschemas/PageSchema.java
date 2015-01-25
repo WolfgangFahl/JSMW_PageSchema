@@ -288,14 +288,27 @@ public class PageSchema extends SchemaItem {
 
     String summary = "modified by JSMW_PageSchema at " + wiki.getIsoTimeStamp();
     // wiki.setDebug(true);
-    wiki.edit(pageTitle, text, summary);
+    edit(wiki,pageTitle, text, summary);
 
     if (!listPage.isAvailable()) {
       LOGGER.log(Level.WARNING, "no mandatory field specified for Category "
           + this.category);
     } else {
-      wiki.edit(listPage.title, listPage.getText(), summary);
+      edit(wiki,listPage.title, listPage.getText(), summary);
     }
+  }
+
+  /**
+   * edit hook
+   * @param wiki
+   * @param pageTitle
+   * @param text
+   * @param summary
+   * @throws Exception 
+   */
+  protected void edit(MediawikiApi wiki, String pageTitle, String text,
+      String summary) throws Exception {
+    wiki.edit(pageTitle, text, summary);
   }
 
   /**
