@@ -247,7 +247,7 @@ public class PageSchema extends SchemaItem {
     if (this.category == null)
       throw new Exception("the category of the schema must be set!");
     LOGGER.log(Level.INFO, "updating PageSchema for " + this.category + " on "
-        + wiki.getSiteurl());
+        + wiki.getSiteurl()+wiki.getScriptPath());
     String xml = this.asXML();
     String pageTitle = "Category:" + this.category;
     xml = xml.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
