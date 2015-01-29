@@ -220,6 +220,34 @@ public class PageSchema extends SchemaItem {
     }
 
     /**
+     * @return the listPageTitle
+     */
+    public String getListPageTitle() {
+      return listPageTitle;
+    }
+
+    /**
+     * @param listPageTitle the listPageTitle to set
+     */
+    public void setListPageTitle(String listPageTitle) {
+      this.listPageTitle = listPageTitle;
+    }
+
+    /**
+     * @return the properties
+     */
+    public List<Property> getProperties() {
+      return properties;
+    }
+
+    /**
+     * @param properties the properties to set
+     */
+    public void setProperties(List<Property> properties) {
+      this.properties = properties;
+    }
+
+    /**
      * a List Page
      * 
      * @param pageSchema
@@ -305,56 +333,28 @@ public class PageSchema extends SchemaItem {
       throws Exception {
     if (this.category == null)
       throw new Exception("the category of the schema must be set!");
-    LOGGER.log(Level.INFO, "updating PageSchema for " + this.category + " on "
-        + wiki.getSiteurl() + wiki.getScriptPath());
-    String xml = this.asXML();
     String pageTitle = "Category:" + this.category;
+    LOGGER.log(Level.INFO, "updating PageSchema for " + this.category + " page "
+        + wiki.getSiteurl() + wiki.getScriptPath()+pageTitle);
+    String xml = this.asXML();
     xml = xml.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
     if (debug)
       LOGGER.log(Level.INFO, xml);
     // create the listPage
     ConceptPage listPage = new ConceptPage(this);
-    String listPageContent = "";
-    if (listPage.isAvailable()) {
-      listPageContent = "* [[" + listPage.listPageTitle + "]]<br>\n";
-    }
-    String generated = "\n[[Category:PageSchema]]\n"
-        + "This Category has been "+getGenerationTimeStamp(wiki)+"<br>\n";
-    String documentation = "\n=== Documentation ===\n" + this.wikiDocumentation
-        + "<br>\n";
-    documentation += "===Concept===\n{{Concept\n" + "|name=" + this.getName()
-        + "\n" + "}}\n";
-    for (PageSchema linkedSchema : linkedSchemas) {
-      documentation += "* see also [[:Category:" + linkedSchema.category
-          + "]]\n";
-    }
-    String uml = "=== UML ===\n" + this.asPlantUml(linkedSchemas);
+ 
+    String uml = this.asPlantUml(linkedSchemas);
 
-    String links = "=== Links === \n" + "* [[:Category:" + this.category
-        + "]]<br>\n" + "* [[:Template:" + this.category + "]]<br>\n"
-        + "* [[:Form:" + this.category + "]]<br>\n" + listPageContent;
-    if (listPage.properties.size() > 0) {
-      String proplist = "====Properties ====\n";
-      for (Property property : listPage.properties) {
-        proplist += "* [[Property:" + property.getName() + "]]<br>\n";
-      }
-      links += "\n" + proplist;
-    }
-
-    String sourcedocumentation = this.getSourceDocumentation();
-    // What to display on the Wiki page
-  
-    String text = xml + "\n" + uml + documentation + links
-        + sourcedocumentation + generated;
-
+    // What to display on the Category Wiki page
     Map<String, Object> rootMap = new HashMap<String, Object>();
     rootMap.put("pageSchema", this);
+    rootMap.put("linkedSchemas", linkedSchemas);
     rootMap.put("xml",xml);
     rootMap.put("uml",uml);
-    rootMap.put("documentation",documentation);
-    rootMap.put("links",links);
-    rootMap.put("sourcedocumentation",sourcedocumentation);
-    rootMap.put("generated",generated);
+    rootMap.put("documentation",this.wikiDocumentation);
+    rootMap.put("listPage",listPage);
+    rootMap.put("sourcedocumentation",this.getSourceDocumentation());
+    rootMap.put("generated",getGenerationTimeStamp(wiki));
     
     updateWithTemplate(wiki,rootMap,pageTitle,"CategoryPage.ftl");   
   

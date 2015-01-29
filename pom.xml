@@ -12,7 +12,7 @@
 	<artifactId>JSMW_PageSchema</artifactId>
 	<packaging>jar</packaging>
 	<name>Semantic Mediawiki PageSchema API</name>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<description>Java library to work with SMW_PageSchemas</description>
 	<url>https://github.com/WolfgangFahl/JSMW_PageSchema</url>
 	<licenses>

@@ -59,6 +59,20 @@ public abstract class SchemaItem {
 	String umlDocumentation = "";
 
 	/**
+   * @return the category
+   */
+  public String getCategory() {
+    return category;
+  }
+
+  /**
+   * @param category the category to set
+   */
+  public void setCategory(String category) {
+    this.category = category;
+  }
+
+  /**
 	 * default constructor to make java and jaxb happy
 	 */
 	public SchemaItem() {
