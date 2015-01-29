@@ -1,4 +1,7 @@
 __NOCACHE__
-{{#ask: [[Concept:" + category
-          + "]] [[" + category + " " + linkField.getName() + "::+]]\n"
-          + queryfields + "}}\n" + "[[:Category:" + category + "]]\n" + "";
+{{#ask: [[Concept:${pageSchema.category}]]
+<#list template.getFields() as field>
+| ?${pageSchema.category} ${field.name}
+</#list>     
+}}
+[[:Category:${pageSchema.category}]]

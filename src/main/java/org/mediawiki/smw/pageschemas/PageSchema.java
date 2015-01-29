@@ -202,7 +202,6 @@ public class PageSchema extends SchemaItem {
     String listPageTitle;
     String conceptPageTitle;
     Field linkField;
-    private String queryfields;
     List<Property> properties = new ArrayList<Property>();
 
     /**
@@ -256,19 +255,6 @@ public class PageSchema extends SchemaItem {
       this.pageSchema = pageSchema;
       init();
     }
-  
-   
-  
-    /**
-     * update a conceptPage using the given wiki, pageTitle and freeMarker Termplate
-     * @param wiki
-     * @throws Exception 
-     */
-    public void updateConceptPage(MediawikiApi wiki, String pageTitle,String freeMarkerTemplateName) throws Exception {
-      Map<String, Object> rootMap = new HashMap<String, Object>();
-      rootMap.put("conceptPage", this);
-      updateWithTemplate(wiki,rootMap,pageTitle,freeMarkerTemplateName);     
-    }
 
     /**
      * check whether this list Page is available
@@ -291,7 +277,6 @@ public class PageSchema extends SchemaItem {
       // query expects non null value (pseudo-primary key ...)
       // could be null after the following search if no mandatory field is
       // specified
-      queryfields = "";
       for (Template template : pageSchema.templates) {
         for (Field field : template.fields) {
           if (field.getProperty() != null) {
@@ -304,21 +289,8 @@ public class PageSchema extends SchemaItem {
               } // if linkfield
             } // mandatory
           } // for param
-          queryfields += "| ?" + category + " " + field.name + "\n";
         }
       }
-    }
-
-    /**
-     * get the Text for the listpage
-     * 
-     * @return
-     */
-    public String getListPageText() {
-      String listPageText = "__NOCACHE__\n" + "{{#ask: [[Category:" + category
-          + "]] [[" + category + " " + linkField.getName() + "::+]]\n"
-          + queryfields + "}}\n" + "[[:Category:" + category + "]]\n" + "";
-      return listPageText;
     }
 
    }
@@ -361,12 +333,13 @@ public class PageSchema extends SchemaItem {
     if (!listPage.isAvailable()) {
       LOGGER.log(Level.WARNING, "no mandatory field specified for Category "
           + this.category);
-    } else {
-      listPage.updateConceptPage(wiki, listPage.conceptPageTitle, "ConceptPage.ftl");
-      String summary = "modified by JSMW_PageSchema at " + wiki.getIsoTimeStamp();
-      // FIXME use template ...
-      pageSchemaManager.edit(listPage.listPageTitle,
-          listPage.getListPageText(), summary);
+    } else { 
+       rootMap.clear();
+       rootMap.put("pageSchema", this);
+       rootMap.put("template", this.getTemplates().get(0));
+       rootMap.put("conceptPage", listPage);
+       updateWithTemplate(wiki,rootMap,listPage.conceptPageTitle,"ConceptPage.ftl"); 
+       updateWithTemplate(wiki,rootMap,listPage.listPageTitle,"ListPage.ftl");
     }
   }
 
