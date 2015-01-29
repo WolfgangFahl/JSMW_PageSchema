@@ -366,7 +366,7 @@ public class PageSchema extends SchemaItem {
       Map<String, Object> rootMap = new HashMap<String, Object>();
       rootMap.put("pageSchema", this);
       rootMap.put("property",property);
-      String pageTitle="Property:"+this.getCategory()+" "+property.getName();
+      String pageTitle="Property:"+property.getName();
       updateWithTemplate(wiki, rootMap, pageTitle, "PropertyPage.ftl");
     }
   }
