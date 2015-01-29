@@ -2,6 +2,6 @@
 {{Attribute
 |name=${property.name}
 |type=Special:Types/${property.type}
-|concept=Conzept:${pageSchema.category}
+|concept=Concept:${pageSchema.category}
 }}
 [[Category:${pageSchema.category}]]
