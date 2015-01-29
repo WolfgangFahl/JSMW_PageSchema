@@ -15,7 +15,9 @@ package org.mediawiki.smw.pageschemas;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.xml.bind.JAXBContext;
@@ -28,6 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import com.bitplan.mediawiki.japi.MediawikiApi;
+import com.bitplan.rest.freemarker.FreeMarkerConfiguration;
 
 /**
  * http://www.mediawiki.org/wiki/Extension:Page_Schemas
@@ -80,7 +83,7 @@ public class PageSchema extends SchemaItem {
   public PageSchema(String category) {
     super(category);
     this.category = category;
-    this.name=category;
+    this.name = category;
   }
 
   /**
@@ -92,7 +95,7 @@ public class PageSchema extends SchemaItem {
   public PageSchema(PageSchemaManager psm, String category) {
     this(category);
     psm.pageSchemas.put(category, this);
-    this.pageSchemaManager=psm;
+    this.pageSchemaManager = psm;
   }
 
   /**
@@ -163,26 +166,66 @@ public class PageSchema extends SchemaItem {
   }
 
   /**
-   * Utility class for the ListPage
+   * Utility class for the Concept and ListPage
    * 
    * @author wf
    *
    */
-  public class ListPage {
-    private PageSchema pageSchema;
-    String title;
+  public class ConceptPage {
+    PageSchema pageSchema;
+    String listPageTitle;
+    String conceptPageTitle;
     Field linkField;
     private String queryfields;
     List<Property> properties = new ArrayList<Property>();
+
+    /**
+     * @return the pageSchema
+     */
+    public PageSchema getPageSchema() {
+      return pageSchema;
+    }
+
+    /**
+     * @param pageSchema the pageSchema to set
+     */
+    public void setPageSchema(PageSchema pageSchema) {
+      this.pageSchema = pageSchema;
+    }
 
     /**
      * a List Page
      * 
      * @param pageSchema
      */
-    public ListPage(PageSchema pageSchema) {
+    public ConceptPage(PageSchema pageSchema) {
       this.pageSchema = pageSchema;
       init();
+    }
+
+    /**
+     * update a conceptPage using the given wiki, pageTitle and freeMarker Termplate
+     * @param wiki
+     * @throws Exception 
+     */
+    public void updateConceptPage(MediawikiApi wiki, String pageTitle,String freeMarkerTemplateName) throws Exception {
+      Map<String, Object> rootMap = new HashMap<String, Object>();
+      rootMap.put("conceptPage", this);
+      // tell Freemarker to use main class path and therefore find templates in
+      // main/resources/templates
+      FreeMarkerConfiguration.addTemplateClass(PageSchema.class,
+          "/templates");
+      // make sure the template is found
+      String wikiPage = FreeMarkerConfiguration.doProcessTemplate(
+          freeMarkerTemplateName, rootMap);
+      // System.out.println(wikiPage);
+      String summary = getGenerationTimeStamp(wiki);
+      LOGGER.log(
+          Level.INFO,
+          "updating " + pageTitle + " on " + wiki.getSiteurl()
+              + wiki.getScriptPath());
+      ;
+      wiki.edit(pageTitle, wikiPage, summary);
     }
 
     /**
@@ -199,8 +242,9 @@ public class PageSchema extends SchemaItem {
      * initialize me
      */
     public void init() {
-      // create list of Category Pages
-      title = "List of " + pageSchema.getPluralName();
+      // create list of Concept Pages
+      listPageTitle = "List of " + pageSchema.getPluralName();
+      conceptPageTitle = "Concept:" + pageSchema.getName();
       linkField = null; // field to link Page to categories -
       // query expects non null value (pseudo-primary key ...)
       // could be null after the following search if no mandatory field is
@@ -228,13 +272,14 @@ public class PageSchema extends SchemaItem {
      * 
      * @return
      */
-    public String getText() {
+    public String getListPageText() {
       String listPageText = "__NOCACHE__\n" + "{{#ask: [[Category:" + category
           + "]] [[" + category + " " + linkField.getName() + "::+]]\n"
           + queryfields + "}}\n" + "[[:Category:" + category + "]]\n" + "";
       return listPageText;
     }
-  }
+
+   }
 
   /**
    * update Me on the given wiki must be already logged in
@@ -247,26 +292,24 @@ public class PageSchema extends SchemaItem {
     if (this.category == null)
       throw new Exception("the category of the schema must be set!");
     LOGGER.log(Level.INFO, "updating PageSchema for " + this.category + " on "
-        + wiki.getSiteurl()+wiki.getScriptPath());
+        + wiki.getSiteurl() + wiki.getScriptPath());
     String xml = this.asXML();
     String pageTitle = "Category:" + this.category;
     xml = xml.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
     if (debug)
       LOGGER.log(Level.INFO, xml);
     // create the listPage
-    ListPage listPage = new ListPage(this);
+    ConceptPage listPage = new ConceptPage(this);
     String listPageContent = "";
     if (listPage.isAvailable()) {
-      listPageContent = "* [[" + listPage.title + "]]<br>\n";
+      listPageContent = "* [[" + listPage.listPageTitle + "]]<br>\n";
     }
     String generated = "\n[[Category:PageSchema]]\n"
-        + "This Category has been generated with " + getJSMW_Link() + " at "
-        + wiki.getIsoTimeStamp() + "<br>\n";
+        + "This Category has been "+getGenerationTimeStamp(wiki)+"<br>\n";
     String documentation = "\n=== Documentation ===\n" + this.wikiDocumentation
         + "<br>\n";
-    documentation+="===Concept===\n{{Concept\n" + 
-        "|name="+this.getName()+"\n" + 
-        "}}\n";
+    documentation += "===Concept===\n{{Concept\n" + "|name=" + this.getName()
+        + "\n" + "}}\n";
     for (PageSchema linkedSchema : linkedSchemas) {
       documentation += "* see also [[:Category:" + linkedSchema.category
           + "]]\n";
@@ -297,8 +340,21 @@ public class PageSchema extends SchemaItem {
       LOGGER.log(Level.WARNING, "no mandatory field specified for Category "
           + this.category);
     } else {
-      pageSchemaManager.edit(listPage.title, listPage.getText(), summary);
+      listPage.updateConceptPage(wiki, listPage.conceptPageTitle, "ConceptPage.ftl");
+      pageSchemaManager.edit(listPage.listPageTitle,
+          listPage.getListPageText(), summary);
     }
+  }
+
+  /**
+   * get a generation time Stamp
+   * @param wiki
+   * @return
+   */
+  private String getGenerationTimeStamp(MediawikiApi wiki) {
+    String result="generated with " + getJSMW_Link() + " at "
+        + wiki.getIsoTimeStamp();
+    return result;
   }
 
   /**

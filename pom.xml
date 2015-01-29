@@ -57,6 +57,12 @@
 			<artifactId>mediawiki-japi</artifactId>
 			<version>0.0.3</version>
 		</dependency>
+		<!-- freemarker template support -->
+		<dependency>
+			<artifactId>com.bitplan.rest.freemarker</artifactId>
+			<groupId>com.bitplan</groupId>
+			<version>0.0.1</version>
+		</dependency>
 		<!-- commons io -->
 		<dependency>
 			<groupId>commons-io</groupId>

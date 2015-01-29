@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
  *
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ TestWiki.class, TestXML.class,
+@Suite.SuiteClasses({ TestFreeMarker.class,TestWiki.class, TestXML.class,
 		TestExampleWikis.class, TestCity.class, TestFAQ.class})
 public class TestSuite {
 

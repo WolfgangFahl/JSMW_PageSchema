@@ -31,7 +31,7 @@ import com.bitplan.mediawiki.japi.MediawikiApi;
 public class PageSchemaManager {
   protected static Logger LOGGER = Logger
       .getLogger("org.mediawiki.smw.pageschemas");
-  Map<String, PageSchema> pageSchemas = new HashMap<String, PageSchema>();
+  protected Map<String, PageSchema> pageSchemas = new HashMap<String, PageSchema>();
   protected MediawikiApi wiki;
 
   /**
