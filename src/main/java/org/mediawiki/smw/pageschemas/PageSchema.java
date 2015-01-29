@@ -164,31 +164,58 @@ public class PageSchema extends SchemaItem {
     PageSchema result = (PageSchema) u.unmarshal(xmlReader);
     return result;
   }
-  
+
   /**
    * update a wiki page using the given template
+   * 
    * @param wiki
    * @param rootMap
    * @param pageTitle
    * @param freeMarkerTemplateName
-   * @throws Exception 
+   * @throws Exception
    */
-  public void updateWithTemplate(MediawikiApi wiki,Map<String, Object> rootMap,String pageTitle,String freeMarkerTemplateName) throws Exception{
+  public void updateWithTemplate(MediawikiApi wiki,
+      Map<String, Object> rootMap, String pageTitle,
+      String freeMarkerTemplateName) throws Exception {
     // tell Freemarker to use main class path and therefore find templates in
     // main/resources/templates
-    FreeMarkerConfiguration.addTemplateClass(PageSchema.class,
-        "/templates");
+    FreeMarkerConfiguration.addTemplateClass(PageSchema.class, "/templates");
     // make sure the template is found
     String wikiPage = FreeMarkerConfiguration.doProcessTemplate(
         freeMarkerTemplateName, rootMap);
     // System.out.println(wikiPage);
     String summary = getGenerationTimeStamp(wiki);
-    LOGGER.log(
-        Level.INFO,
-        "updating " + pageTitle + " on " + wiki.getSiteurl()
-            + wiki.getScriptPath());
+    LOGGER.log(Level.INFO, "updating " + pageTitle + " on " + wiki.getSiteurl()
+        + wiki.getScriptPath());
     ;
     wiki.edit(pageTitle, wikiPage, summary);
+  }
+
+  List<Property> properties = null;
+
+  /**
+   * @return the properties
+   */
+  public List<Property> getProperties() {
+    if (properties == null) {
+      properties = new ArrayList<Property>();
+      for (Template template : getTemplates()) {
+        for (Field field : template.getFields()) {
+          if (field.getProperty() != null) {
+            properties.add(field.getProperty());
+          }
+        }
+      }
+    }
+    return properties;
+  }
+
+  /**
+   * @param properties
+   *          the properties to set
+   */
+  public void setProperties(List<Property> properties) {
+    this.properties = properties;
   }
 
   /**
@@ -202,7 +229,6 @@ public class PageSchema extends SchemaItem {
     String listPageTitle;
     String conceptPageTitle;
     Field linkField;
-    List<Property> properties = new ArrayList<Property>();
 
     /**
      * @return the pageSchema
@@ -212,7 +238,8 @@ public class PageSchema extends SchemaItem {
     }
 
     /**
-     * @param pageSchema the pageSchema to set
+     * @param pageSchema
+     *          the pageSchema to set
      */
     public void setPageSchema(PageSchema pageSchema) {
       this.pageSchema = pageSchema;
@@ -226,24 +253,11 @@ public class PageSchema extends SchemaItem {
     }
 
     /**
-     * @param listPageTitle the listPageTitle to set
+     * @param listPageTitle
+     *          the listPageTitle to set
      */
     public void setListPageTitle(String listPageTitle) {
       this.listPageTitle = listPageTitle;
-    }
-
-    /**
-     * @return the properties
-     */
-    public List<Property> getProperties() {
-      return properties;
-    }
-
-    /**
-     * @param properties the properties to set
-     */
-    public void setProperties(List<Property> properties) {
-      this.properties = properties;
     }
 
     /**
@@ -274,14 +288,12 @@ public class PageSchema extends SchemaItem {
       listPageTitle = "List of " + pageSchema.getPluralName();
       conceptPageTitle = "Concept:" + pageSchema.getName();
       linkField = null; // field to link Page to categories -
+      // FIXME - do we still need that crutch?
       // query expects non null value (pseudo-primary key ...)
       // could be null after the following search if no mandatory field is
       // specified
       for (Template template : pageSchema.templates) {
         for (Field field : template.fields) {
-          if (field.getProperty() != null) {
-            properties.add(field.getProperty());
-          }
           for (Parameter param : field.formInput.parameters) {
             if ("mandatory".equals(param.name.toLowerCase())) {
               if (linkField == null) {
@@ -293,7 +305,7 @@ public class PageSchema extends SchemaItem {
       }
     }
 
-   }
+  }
 
   /**
    * update Me on the given wiki must be already logged in
@@ -306,50 +318,67 @@ public class PageSchema extends SchemaItem {
     if (this.category == null)
       throw new Exception("the category of the schema must be set!");
     String pageTitle = "Category:" + this.category;
-    LOGGER.log(Level.INFO, "updating PageSchema for " + this.category + " page "
-        + wiki.getSiteurl() + wiki.getScriptPath()+pageTitle);
+    LOGGER.log(Level.INFO, "updating PageSchema for " + this.category
+        + " page " + wiki.getSiteurl() + wiki.getScriptPath() + pageTitle);
     String xml = this.asXML();
     xml = xml.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
     if (debug)
       LOGGER.log(Level.INFO, xml);
     // create the listPage
     ConceptPage listPage = new ConceptPage(this);
- 
+
     String uml = this.asPlantUml(linkedSchemas);
 
     // What to display on the Category Wiki page
     Map<String, Object> rootMap = new HashMap<String, Object>();
     rootMap.put("pageSchema", this);
     rootMap.put("linkedSchemas", linkedSchemas);
-    rootMap.put("xml",xml);
-    rootMap.put("uml",uml);
-    rootMap.put("documentation",this.wikiDocumentation);
-    rootMap.put("listPage",listPage);
-    rootMap.put("sourcedocumentation",this.getSourceDocumentation());
-    rootMap.put("generated",getGenerationTimeStamp(wiki));
-    
-    updateWithTemplate(wiki,rootMap,pageTitle,"CategoryPage.ftl");   
-  
+    rootMap.put("xml", xml);
+    rootMap.put("uml", uml);
+    rootMap.put("documentation", this.wikiDocumentation);
+    rootMap.put("listPage", listPage);
+    rootMap.put("sourcedocumentation", this.getSourceDocumentation());
+    rootMap.put("generated", getGenerationTimeStamp(wiki));
+
+    updateWithTemplate(wiki, rootMap, pageTitle, "CategoryPage.ftl");
+
     if (!listPage.isAvailable()) {
       LOGGER.log(Level.WARNING, "no mandatory field specified for Category "
           + this.category);
-    } else { 
-       rootMap.clear();
-       rootMap.put("pageSchema", this);
-       rootMap.put("template", this.getTemplates().get(0));
-       rootMap.put("conceptPage", listPage);
-       updateWithTemplate(wiki,rootMap,listPage.conceptPageTitle,"ConceptPage.ftl"); 
-       updateWithTemplate(wiki,rootMap,listPage.listPageTitle,"ListPage.ftl");
+    } else {
+      rootMap.clear();
+      rootMap.put("pageSchema", this);
+      rootMap.put("template", this.getTemplates().get(0));
+      rootMap.put("conceptPage", listPage);
+      updateWithTemplate(wiki, rootMap, listPage.conceptPageTitle,
+          "ConceptPage.ftl");
+      updateWithTemplate(wiki, rootMap, listPage.listPageTitle, "ListPage.ftl");
+    }
+  }
+  
+  /**
+   * update the property declaration pages 
+   * @param wiki - the wiki
+   * @throws Exception 
+   */
+  public void updatePropertyDeclarationPages(MediawikiApi wiki) throws Exception {
+    for (Property property:this.getProperties()) {
+      Map<String, Object> rootMap = new HashMap<String, Object>();
+      rootMap.put("pageSchema", this);
+      rootMap.put("property",property);
+      String pageTitle="Property:"+this.getCategory()+" "+property.getName();
+      updateWithTemplate(wiki, rootMap, pageTitle, "PropertyPage.ftl");
     }
   }
 
   /**
    * get a generation time Stamp
+   * 
    * @param wiki
    * @return
    */
   private String getGenerationTimeStamp(MediawikiApi wiki) {
-    String result="generated with " + getJSMW_Link() + " at "
+    String result = "generated with " + getJSMW_Link() + " at "
         + wiki.getIsoTimeStamp();
     return result;
   }
@@ -452,5 +481,7 @@ public class PageSchema extends SchemaItem {
     }
     return result;
   }
+
+  
 
 }

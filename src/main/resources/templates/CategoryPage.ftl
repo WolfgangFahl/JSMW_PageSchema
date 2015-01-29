@@ -18,9 +18,9 @@ ${documentation}
 <#if listPage.isAvailable()>
 * [[${listPage.listPageTitle}]]
 </#if>
-<#if (listPage.properties.size() > 0)>
+<#if (pageSchema.getProperties().size() > 0)>
 ====Properties ====
-<#list listPage.properties as property>
+<#list pageSchema.properties as property>
 * [[Property:${property.name}]]
 </#list>
 </#if>
