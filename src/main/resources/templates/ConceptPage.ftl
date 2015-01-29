@@ -1,4 +1,13 @@
 === Concept ===
+<#assign pageSchema=conceptPage.getPageSchema()/>
 {{Concept
-|name=${conceptPage.pageSchema.name}
+|name=${pageSchema.name}
+}}
+
+{{#concept:
+ [[Category:${pageSchema.name}]]
+ | ${pageSchema.pluralName} 
+see also
+* [[:Category:${pageSchema.name}]]
+* [[List of ${pageSchema.pluralName}]]
 }}

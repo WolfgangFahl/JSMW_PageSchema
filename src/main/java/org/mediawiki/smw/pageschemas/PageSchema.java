@@ -164,6 +164,32 @@ public class PageSchema extends SchemaItem {
     PageSchema result = (PageSchema) u.unmarshal(xmlReader);
     return result;
   }
+  
+  /**
+   * update a wiki page using the given template
+   * @param wiki
+   * @param rootMap
+   * @param pageTitle
+   * @param freeMarkerTemplateName
+   * @throws Exception 
+   */
+  public void updateWithTemplate(MediawikiApi wiki,Map<String, Object> rootMap,String pageTitle,String freeMarkerTemplateName) throws Exception{
+    // tell Freemarker to use main class path and therefore find templates in
+    // main/resources/templates
+    FreeMarkerConfiguration.addTemplateClass(PageSchema.class,
+        "/templates");
+    // make sure the template is found
+    String wikiPage = FreeMarkerConfiguration.doProcessTemplate(
+        freeMarkerTemplateName, rootMap);
+    // System.out.println(wikiPage);
+    String summary = getGenerationTimeStamp(wiki);
+    LOGGER.log(
+        Level.INFO,
+        "updating " + pageTitle + " on " + wiki.getSiteurl()
+            + wiki.getScriptPath());
+    ;
+    wiki.edit(pageTitle, wikiPage, summary);
+  }
 
   /**
    * Utility class for the Concept and ListPage
@@ -202,7 +228,9 @@ public class PageSchema extends SchemaItem {
       this.pageSchema = pageSchema;
       init();
     }
-
+  
+   
+  
     /**
      * update a conceptPage using the given wiki, pageTitle and freeMarker Termplate
      * @param wiki
@@ -211,21 +239,7 @@ public class PageSchema extends SchemaItem {
     public void updateConceptPage(MediawikiApi wiki, String pageTitle,String freeMarkerTemplateName) throws Exception {
       Map<String, Object> rootMap = new HashMap<String, Object>();
       rootMap.put("conceptPage", this);
-      // tell Freemarker to use main class path and therefore find templates in
-      // main/resources/templates
-      FreeMarkerConfiguration.addTemplateClass(PageSchema.class,
-          "/templates");
-      // make sure the template is found
-      String wikiPage = FreeMarkerConfiguration.doProcessTemplate(
-          freeMarkerTemplateName, rootMap);
-      // System.out.println(wikiPage);
-      String summary = getGenerationTimeStamp(wiki);
-      LOGGER.log(
-          Level.INFO,
-          "updating " + pageTitle + " on " + wiki.getSiteurl()
-              + wiki.getScriptPath());
-      ;
-      wiki.edit(pageTitle, wikiPage, summary);
+      updateWithTemplate(wiki,rootMap,pageTitle,freeMarkerTemplateName);     
     }
 
     /**
@@ -329,18 +343,28 @@ public class PageSchema extends SchemaItem {
 
     String sourcedocumentation = this.getSourceDocumentation();
     // What to display on the Wiki page
+  
     String text = xml + "\n" + uml + documentation + links
         + sourcedocumentation + generated;
 
-    String summary = "modified by JSMW_PageSchema at " + wiki.getIsoTimeStamp();
-    // wiki.setDebug(true);
-    pageSchemaManager.edit(pageTitle, text, summary);
-
+    Map<String, Object> rootMap = new HashMap<String, Object>();
+    rootMap.put("pageSchema", this);
+    rootMap.put("xml",xml);
+    rootMap.put("uml",uml);
+    rootMap.put("documentation",documentation);
+    rootMap.put("links",links);
+    rootMap.put("sourcedocumentation",sourcedocumentation);
+    rootMap.put("generated",generated);
+    
+    updateWithTemplate(wiki,rootMap,pageTitle,"CategoryPage.ftl");   
+  
     if (!listPage.isAvailable()) {
       LOGGER.log(Level.WARNING, "no mandatory field specified for Category "
           + this.category);
     } else {
       listPage.updateConceptPage(wiki, listPage.conceptPageTitle, "ConceptPage.ftl");
+      String summary = "modified by JSMW_PageSchema at " + wiki.getIsoTimeStamp();
+      // FIXME use template ...
       pageSchemaManager.edit(listPage.listPageTitle,
           listPage.getListPageText(), summary);
     }
