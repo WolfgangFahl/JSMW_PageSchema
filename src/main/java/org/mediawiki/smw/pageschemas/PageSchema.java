@@ -210,10 +210,26 @@ public class PageSchema extends SchemaItem {
   public void updateWithTemplate(MediawikiApi wiki,
       Map<String, Object> rootMap, String pageTitle,
       String freeMarkerTemplateName) throws Exception {
+    String summary = getGenerationTimeStamp(wiki);
+    updateWithTemplate(wiki,rootMap,pageTitle,summary,freeMarkerTemplateName);
+  }
+
+  /**
+   * update a wiki page using the given template settings
+   * @param wiki
+   * @param rootMap
+   * @param pageTitle
+   * @param summary
+   * @param freeMarkerTemplateName
+   * @throws Exception
+   */
+  public void updateWithTemplate(MediawikiApi wiki,
+      Map<String, Object> rootMap, String pageTitle,
+      String summary,String freeMarkerTemplateName) throws Exception {
+
     String wikiPage=this.processTemplate(rootMap, freeMarkerTemplateName);
    
     // System.out.println(wikiPage);
-    String summary = getGenerationTimeStamp(wiki);
     LOGGER.log(Level.INFO, "updating " + pageTitle + " on " + wiki.getSiteurl()
         + wiki.getScriptPath());
     ;
