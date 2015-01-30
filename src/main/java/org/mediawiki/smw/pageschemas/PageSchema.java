@@ -165,6 +165,22 @@ public class PageSchema extends SchemaItem {
     return result;
   }
 
+  String freemarkerTemplatePath="/templates";
+  
+  /**
+   * @return the freemarkerTemplatePath
+   */
+  public String getFreemarkerTemplatePath() {
+    return freemarkerTemplatePath;
+  }
+
+  /**
+   * @param freemarkerTemplatePath the freemarkerTemplatePath to set
+   */
+  public void setFreemarkerTemplatePath(String freemarkerTemplatePath) {
+    this.freemarkerTemplatePath = freemarkerTemplatePath;
+  }
+
   /**
    * update a wiki page using the given template
    * 
@@ -179,7 +195,7 @@ public class PageSchema extends SchemaItem {
       String freeMarkerTemplateName) throws Exception {
     // tell Freemarker to use main class path and therefore find templates in
     // main/resources/templates
-    FreeMarkerConfiguration.addTemplateClass(PageSchema.class, "/templates");
+    FreeMarkerConfiguration.addTemplateClass(PageSchema.class, getFreemarkerTemplatePath());
     // make sure the template is found
     String wikiPage = FreeMarkerConfiguration.doProcessTemplate(
         freeMarkerTemplateName, rootMap);

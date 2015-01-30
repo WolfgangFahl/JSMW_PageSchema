@@ -78,6 +78,17 @@ public class PageSchemaManager {
   }
 
   /**
+   * hook for pageSchema update - override of this is possible
+   * @param pageSchema
+   * @param wiki
+   * @param allLinkedSchemas
+   * @throws Exception
+   */
+  public void update(PageSchema pageSchema,MediawikiApi wiki,List<PageSchema> allLinkedSchemas) throws Exception {
+    pageSchema.update(wiki, allLinkedSchemas);    
+  }
+  
+  /**
    * update me on the given wiki - with the given PageSchemaManager - must
    * already be logged in to work
    * 
@@ -93,7 +104,7 @@ public class PageSchemaManager {
         List<PageSchema> linkedSchemas = template.getLinkedPageSchemas(this);
         allLinkedSchemas.addAll(linkedSchemas);
       }
-      pageSchema.update(wiki, allLinkedSchemas);
+      update(pageSchema,wiki,allLinkedSchemas);
     }
     LOGGER.log(Level.INFO, "Done");
   }
