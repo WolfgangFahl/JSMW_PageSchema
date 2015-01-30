@@ -19,12 +19,11 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlValue;
 
 /**
@@ -212,29 +211,6 @@ public abstract class SchemaItem {
 	public String asWikiContent() throws JAXBException {
 		String xml = this.asXML();
 		return xml;
-	}
-
-	/**
-	 * get an UML note with the given noteTitle and noteContent
-	 * 
-	 * @param noteTitle
-	 * @param noteContent
-	 * @return the UmlNote
-	 */
-	public String getUmlNote(String noteTitle, String noteContent) {
-		String result = "note as " + noteTitle + "\n" + noteContent + "\n"
-				+ "end note\n";
-		return result;
-	}
-
-	/**
-	 * get my local uml content
-	 * 
-	 * @return
-	 */
-	public// abstract
-	String getUmlContent() {
-		return "";
 	}
 
 }

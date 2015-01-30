@@ -12,9 +12,14 @@ end note
 class ${pageSchema.category} <<Category>> {
 <#list template.getFields() as field>
 ' ${field.category!"no category"} ${field.name} ${field.label}
-</#list>
+<#if field.category??>
+<#else>
+${field.property.type} ${field.label}
+</#if>
 </#list>
 }
+${template.name}Note .. ${pageSchema.category}
+</#list>
 <#list linkedSchemas as linkedSchema>
 ${pageSchema.category} -- ${linkedSchema.category}
 </#list>    
