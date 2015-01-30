@@ -1,5 +1,6 @@
 <!--  Plantuml  -->
 <uml>
+title ${pageSchema.category}
 ${uml}
 skinparam classBackgroundColor white
 skinparam classBorderColor #FF8000

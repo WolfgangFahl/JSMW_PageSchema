@@ -215,17 +215,6 @@ public abstract class SchemaItem {
 	}
 
 	/**
-	 * get an UML title
-	 * 
-	 * @param title
-	 * @return
-	 */
-	protected String getUmlTitle(String title) {
-		String result = "\ntitle " + title + "\n";
-		return result;
-	}
-
-	/**
 	 * get an UML note with the given noteTitle and noteContent
 	 * 
 	 * @param noteTitle
