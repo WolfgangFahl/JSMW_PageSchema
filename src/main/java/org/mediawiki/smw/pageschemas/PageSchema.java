@@ -180,6 +180,23 @@ public class PageSchema extends SchemaItem {
   public void setFreemarkerTemplatePath(String freemarkerTemplatePath) {
     this.freemarkerTemplatePath = freemarkerTemplatePath;
   }
+  
+  /**
+   * get a template result
+   * @param rootMap
+   * @param freeMarkerTemplateName
+   * @return
+   * @throws Exception
+   */
+  public String processTemplate(Map<String, Object> rootMap,String freeMarkerTemplateName) throws Exception {
+    // tell Freemarker to use main class path and therefore find templates in
+    // main/resources/templates
+    FreeMarkerConfiguration.addTemplateClass(PageSchema.class, getFreemarkerTemplatePath());
+    // process the template with the given name
+    String result = FreeMarkerConfiguration.doProcessTemplate(
+        freeMarkerTemplateName, rootMap); 
+    return result;
+  }
 
   /**
    * update a wiki page using the given template
@@ -193,12 +210,8 @@ public class PageSchema extends SchemaItem {
   public void updateWithTemplate(MediawikiApi wiki,
       Map<String, Object> rootMap, String pageTitle,
       String freeMarkerTemplateName) throws Exception {
-    // tell Freemarker to use main class path and therefore find templates in
-    // main/resources/templates
-    FreeMarkerConfiguration.addTemplateClass(PageSchema.class, getFreemarkerTemplatePath());
-    // make sure the template is found
-    String wikiPage = FreeMarkerConfiguration.doProcessTemplate(
-        freeMarkerTemplateName, rootMap);
+    String wikiPage=this.processTemplate(rootMap, freeMarkerTemplateName);
+   
     // System.out.println(wikiPage);
     String summary = getGenerationTimeStamp(wiki);
     LOGGER.log(Level.INFO, "updating " + pageTitle + " on " + wiki.getSiteurl()
@@ -412,8 +425,9 @@ public class PageSchema extends SchemaItem {
 
   /**
    * return me as an uml diagram
+   * @throws Exception 
    */
-  public String asPlantUml(List<PageSchema> linkedSchemas) {
+  public String asPlantUml(List<PageSchema> linkedSchemas) throws Exception {
     String content = getUmlTitle(this.category);
     String note = "";
     content += getUmlNote(category + "DiagramNote", getCopyright() + note);
@@ -425,7 +439,9 @@ public class PageSchema extends SchemaItem {
     for (PageSchema linkedSchema : linkedSchemas) {
       content += category + " -- " + linkedSchema.category + "\n";
     }
-    String result = super.asPlantUml(content);
+    Map<String, Object> rootMap = new HashMap<String, Object>();
+    rootMap.put("uml", content);
+    String result = this.processTemplate(rootMap, "Plantuml.ftl");
     return result;
   }
 

@@ -215,22 +215,6 @@ public abstract class SchemaItem {
 	}
 
 	/**
-	 * get skin parameters
-	 * 
-	 * @return
-	 */
-	public String getSkinParams() {
-		String skinParams = "skinparam classBackgroundColor white\n"
-				+ "skinparam classBorderColor #FF8000\n"
-				+ "skinparam classFontColor black\n" + "skinparam classFontSize 12\n"
-				+ "skinparam classFontName Arial\n"
-				+ "skinparam NoteBorderColor #FF8000\n"
-				+ "skinparam NoteBackgroundColor #FFFFF0\n"
-				+ "hide circle";
-		return skinParams;
-	}
-
-	/**
 	 * get an UML title
 	 * 
 	 * @param title
@@ -264,15 +248,4 @@ public abstract class SchemaItem {
 		return "";
 	}
 
-	/**
-	 * get me as a plant UML String
-	 * 
-	 * @param the
-	 *          content to show
-	 * @return
-	 */
-	public String asPlantUml(String content) {
-		String result = "<uml>\n" + getSkinParams() + content + "</uml>";
-		return result;
-	}
 }
