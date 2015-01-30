@@ -211,7 +211,7 @@ public class PageSchema extends SchemaItem {
       Map<String, Object> rootMap, String pageTitle,
       String freeMarkerTemplateName) throws Exception {
     String summary = getGenerationTimeStamp(wiki);
-    updateWithTemplate(wiki,rootMap,pageTitle,summary,freeMarkerTemplateName);
+    updateWithTemplate(wiki,rootMap,pageTitle,freeMarkerTemplateName,summary);
   }
 
   /**
@@ -225,7 +225,7 @@ public class PageSchema extends SchemaItem {
    */
   public void updateWithTemplate(MediawikiApi wiki,
       Map<String, Object> rootMap, String pageTitle,
-      String summary,String freeMarkerTemplateName) throws Exception {
+      String freeMarkerTemplateName,String summary) throws Exception {
 
     String wikiPage=this.processTemplate(rootMap, freeMarkerTemplateName);
    
