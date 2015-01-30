@@ -440,6 +440,7 @@ public class PageSchema extends SchemaItem {
       content += category + " -- " + linkedSchema.category + "\n";
     }
     Map<String, Object> rootMap = new HashMap<String, Object>();
+    rootMap.put("pageSchema", "this");
     rootMap.put("uml", content);
     String result = this.processTemplate(rootMap, "Plantuml.ftl");
     return result;
