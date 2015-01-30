@@ -11,9 +11,7 @@ ${pageSchema.umlDocumentation}
 end note
 class ${pageSchema.category} <<Category>> {
 <#list template.getFields() as field>
-<#if field.category??>
-${field.umlContent}
-</#if>
+' ${field.category!"no category"} ${field.name} ${field.label}
 </#list>
 </#list>
 }

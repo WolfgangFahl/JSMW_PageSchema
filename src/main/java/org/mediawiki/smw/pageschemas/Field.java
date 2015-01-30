@@ -105,7 +105,7 @@ public class Field extends SchemaItem {
 		String result = "";
 		// FIXME this is a link - make this conceptually clear (e.g. via interface
 		// or mapping?)
-		if (this.category == null) {
+		if (this.getCategory() == null) {
 			result = this.property.type + " " + this.getLabel() + "\n";
 		} else {
 			if (debug)
