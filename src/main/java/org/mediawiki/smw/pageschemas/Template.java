@@ -176,15 +176,6 @@ public class Template extends SchemaItem {
 		LOGGER.log(Level.FINE,"created FormInput"+formInput.name);
 		return field;
 	}
-
-	@Override
-	public String getUmlContent() {
-		String result="";
-		for (Field field:this.getFields()) {
-			result+=field.getUmlContent();
-		}
-		return result;
-	}
 	
 	/**
 	 * get a list of PageSchemas that are linked via the corresponding "Page" Category;

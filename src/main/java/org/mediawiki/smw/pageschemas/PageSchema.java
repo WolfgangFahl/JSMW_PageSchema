@@ -355,13 +355,12 @@ public class PageSchema extends SchemaItem {
       LOGGER.log(Level.INFO, xml);
     // create the listPage
     ConceptPage listPage = new ConceptPage(this);
-
-    String uml = this.asPlantUml(linkedSchemas);
-
-    // What to display on the Category Wiki page
     Map<String, Object> rootMap = new HashMap<String, Object>();
     rootMap.put("pageSchema", this);
     rootMap.put("linkedSchemas", linkedSchemas);
+    String uml = this.processTemplate(rootMap, "Plantuml.ftl");
+
+    // What to display on the Category Wiki page
     rootMap.put("xml", xml);
     rootMap.put("uml", uml);
     rootMap.put("documentation", this.wikiDocumentation);
@@ -375,8 +374,6 @@ public class PageSchema extends SchemaItem {
       LOGGER.log(Level.WARNING, "no mandatory field specified for Category "
           + this.category);
     } else {
-      rootMap.clear();
-      rootMap.put("pageSchema", this);
       rootMap.put("template", this.getTemplates().get(0));
       rootMap.put("conceptPage", listPage);
       updateWithTemplate(wiki, rootMap, listPage.conceptPageTitle,
@@ -412,64 +409,7 @@ public class PageSchema extends SchemaItem {
     return result;
   }
 
-  /**
-   * get the copyright
-   * 
-   * @return the copyright
-   */
-  public String getCopyright() {
-    String result = "Copyright (c) 2015 BITPlan GmbH\n"
-        + "[[http://www.bitplan.com]]";
-    return result;
-  }
-
-  /**
-   * return me as an uml diagram
-   * @throws Exception 
-   */
-  public String asPlantUml(List<PageSchema> linkedSchemas) throws Exception {
-    String content = "";
-    String note = "";
-    content += getUmlNote(category + "DiagramNote", getCopyright() + note);
-    String classContent = "";
-    for (Template template : this.getTemplates()) {
-      classContent += template.getUmlContent();
-    }
-    content += getUmlClass(this.category, classContent);
-    for (PageSchema linkedSchema : linkedSchemas) {
-      content += category + " -- " + linkedSchema.category + "\n";
-    }
-    Map<String, Object> rootMap = new HashMap<String, Object>();
-    rootMap.put("pageSchema", this);
-    rootMap.put("uml", content);
-    String result = this.processTemplate(rootMap, "Plantuml.ftl");
-    return result;
-  }
-
-  public String getSpot() {
-    // << (S,#FF7700) Singleton >>
-    String spot = " <<Category>>";
-    return spot;
-  }
-
-  /**
-   * return me as an UML Class
-   * 
-   * @param className
-   * @param classContent
-   * @return
-   */
-  @XmlTransient
-  protected String getUmlClass(String className, String classContent) {
-    // FIXME top of "+className
-    // http://plantuml.sourceforge.net/classes.html
-
-    String classNote = getUmlNote(className + "Note ", this.umlDocumentation);
-    classNote += className + "Note .. " + className + "\n";
-    String result = classNote + "Class " + className + getSpot() + " {\n"
-        + classContent + "\n" + "}\n";
-    return result;
-  }
+  
 
   /**
    * get the default Template
