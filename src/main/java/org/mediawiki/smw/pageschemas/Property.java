@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * a property
@@ -13,8 +14,10 @@ import javax.xml.bind.annotation.XmlElement;
 public class Property extends SchemaItem {
 	String type;
 	String linkedForm;
+	@XmlTransient
+	Field field;
 
-	List<AllowedValue> allowedValues=new ArrayList<AllowedValue>();
+  List<AllowedValue> allowedValues=new ArrayList<AllowedValue>();
 
 	/**
 	 * default constructor
@@ -30,6 +33,21 @@ public class Property extends SchemaItem {
 		super(name);
 		this.type=type;
 	}
+	
+	/**
+   * @return the field
+   */
+	@XmlTransient
+  public Field getField() {
+    return field;
+  }
+
+  /**
+   * @param field the field to set
+   */
+  public void setField(Field field) {
+    this.field = field;
+  }
 	
 	/**
 	 * @return the type

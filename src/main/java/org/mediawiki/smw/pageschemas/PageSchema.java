@@ -247,6 +247,7 @@ public class PageSchema extends SchemaItem {
       for (Template template : getTemplates()) {
         for (Field field : template.getFields()) {
           if (field.getProperty() != null) {
+            field.getProperty().setField(field);
             properties.add(field.getProperty());
           }
         }
