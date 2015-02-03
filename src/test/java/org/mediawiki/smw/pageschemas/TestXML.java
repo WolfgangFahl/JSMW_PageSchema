@@ -15,7 +15,27 @@ import org.junit.Test;
  */
 public class TestXML {
 	
-	@Test
+	private String citySchema="<PageSchema>\n" + 
+      "   <semanticforms_Form name=\"City\"/>\n" + 
+      "   <Template name=\"City\" format=\"standard\">\n" + 
+      "      <Field name=\"Language\">\n" + 
+      "         <semanticforms_FormInput>\n" + 
+      "            <InputType>text</InputType>\n" + 
+      "            <Parameter name=\"size\" pluralName=\"sizes\">20</Parameter>\n" + 
+      "         </semanticforms_FormInput>\n" + 
+      "         <Label>Pop.</Label>\n" + 
+      "      </Field>\n" + 
+      "      <Field>\n" + 
+      "         <semanticmediawiki_Property name=\"population\">\n" + 
+      "            <AllowedValue>de</AllowedValue>\n" + 
+      "            <AllowedValue>en</AllowedValue>\n" + 
+      "            <Type>Text</Type>\n" + 
+      "         </semanticmediawiki_Property>\n" + 
+      "      </Field>\n" + 
+      "   </Template>\n" + 
+      "</PageSchema>";
+
+  @Test
 	public void testMarshal() throws JAXBException {
 		Parameter parameter=new Parameter();
 		parameter.setName("name");
@@ -66,25 +86,7 @@ public class TestXML {
     
 		String xml=schema.asXML();
 		System.out.println(xml);
-		String expected="<PageSchema>\n" + 
-				"   <semanticforms_Form name=\"City\"/>\n" + 
-				"   <Template name=\"City\" format=\"standard\">\n" + 
-				"      <Field name=\"Language\">\n" + 
-				"         <semanticforms_FormInput>\n" + 
-				"            <InputType>text</InputType>\n" + 
-				"            <Parameter name=\"size\" pluralName=\"sizes\">20</Parameter>\n" + 
-				"         </semanticforms_FormInput>\n" + 
-				"         <Label>Pop.</Label>\n" + 
-				"      </Field>\n" + 
-				"      <Field>\n" + 
-				"         <semanticmediawiki_Property name=\"population\">\n" + 
-				"            <AllowedValue>de</AllowedValue>\n" + 
-				"            <AllowedValue>en</AllowedValue>\n" + 
-				"            <Type>Text</Type>\n" + 
-				"         </semanticmediawiki_Property>\n" + 
-				"      </Field>\n" + 
-				"   </Template>\n" + 
-				"</PageSchema>";
+		String expected=citySchema;
 		assertTrue(xml.contains(expected));
 	}
 
@@ -157,6 +159,18 @@ public class TestXML {
 			assertEquals("mandatory",pageSectionParams.get(1).getName());
 			assertEquals("",pageSectionParams.get(1).getValue());
 		}
+	}
+	
+	@Test
+	public void testFieldGetters() throws JAXBException {
+	  PageSchema cityPageSchema = PageSchema.fromXML(citySchema);
+    assertNotNull(cityPageSchema);
+    List<Template> templates = cityPageSchema.getTemplates();
+    for (Template template:templates) {
+      for (Field field:template.getFields()) {
+        System.out.println(field);
+      }
+    }
 	}
 
 }
