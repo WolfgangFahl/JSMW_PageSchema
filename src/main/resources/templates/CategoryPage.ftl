@@ -11,11 +11,11 @@ ${documentation}
 |name=${pageSchema.name}
 }}
 === Links ===
-* [[:Category:${pageSchema.category}]]
+* [[List of ${pageSchema.pluralName}]]
 * [[Concept:${pageSchema.category}]]
+* [[:Category:${pageSchema.category}]]
 * [[:Template:${pageSchema.category}]]
 * [[:Form:${pageSchema.category}]]
-* [[List of ${pageSchema.pluralName}]]
 <#if (pageSchema.getProperties().size() > 0)>
 ====Properties ====
 <#list pageSchema.properties as property>
