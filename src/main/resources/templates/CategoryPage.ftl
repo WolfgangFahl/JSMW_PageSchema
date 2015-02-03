@@ -15,9 +15,7 @@ ${documentation}
 * [[Concept:${pageSchema.category}]]
 * [[:Template:${pageSchema.category}]]
 * [[:Form:${pageSchema.category}]]
-<#if listPage.isAvailable()>
-* [[${listPage.listPageTitle}]]
-</#if>
+* [[List of ${pageSchema.pluralName}]]
 <#if (pageSchema.getProperties().size() > 0)>
 ====Properties ====
 <#list pageSchema.properties as property>

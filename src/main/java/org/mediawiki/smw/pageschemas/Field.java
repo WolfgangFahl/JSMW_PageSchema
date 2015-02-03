@@ -44,6 +44,8 @@ public class Field extends SchemaItem {
 	 */
 	@XmlElement(name = "Label")
 	public String getLabel() {
+	  if (name!=null && label==null)
+	    return name;
 		return label;
 	}
 

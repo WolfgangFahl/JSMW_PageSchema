@@ -165,8 +165,8 @@ public class PageSchema extends SchemaItem {
     return result;
   }
 
-  String freemarkerTemplatePath="/templates";
-  
+  String freemarkerTemplatePath = "/templates";
+
   /**
    * @return the freemarkerTemplatePath
    */
@@ -175,26 +175,30 @@ public class PageSchema extends SchemaItem {
   }
 
   /**
-   * @param freemarkerTemplatePath the freemarkerTemplatePath to set
+   * @param freemarkerTemplatePath
+   *          the freemarkerTemplatePath to set
    */
   public void setFreemarkerTemplatePath(String freemarkerTemplatePath) {
     this.freemarkerTemplatePath = freemarkerTemplatePath;
   }
-  
+
   /**
    * get a template result
+   * 
    * @param rootMap
    * @param freeMarkerTemplateName
    * @return
    * @throws Exception
    */
-  public String processTemplate(Map<String, Object> rootMap,String freeMarkerTemplateName) throws Exception {
+  public String processTemplate(Map<String, Object> rootMap,
+      String freeMarkerTemplateName) throws Exception {
     // tell Freemarker to use main class path and therefore find templates in
     // main/resources/templates
-    FreeMarkerConfiguration.addTemplateClass(PageSchema.class, getFreemarkerTemplatePath());
+    FreeMarkerConfiguration.addTemplateClass(PageSchema.class,
+        getFreemarkerTemplatePath());
     // process the template with the given name
     String result = FreeMarkerConfiguration.doProcessTemplate(
-        freeMarkerTemplateName, rootMap); 
+        freeMarkerTemplateName, rootMap);
     return result;
   }
 
@@ -211,11 +215,13 @@ public class PageSchema extends SchemaItem {
       Map<String, Object> rootMap, String pageTitle,
       String freeMarkerTemplateName) throws Exception {
     String summary = getGenerationTimeStamp(wiki);
-    updateWithTemplate(wiki,rootMap,pageTitle,freeMarkerTemplateName,summary);
+    updateWithTemplate(wiki, rootMap, pageTitle, freeMarkerTemplateName,
+        summary);
   }
 
   /**
    * update a wiki page using the given template settings
+   * 
    * @param wiki
    * @param rootMap
    * @param pageTitle
@@ -225,10 +231,10 @@ public class PageSchema extends SchemaItem {
    */
   public void updateWithTemplate(MediawikiApi wiki,
       Map<String, Object> rootMap, String pageTitle,
-      String freeMarkerTemplateName,String summary) throws Exception {
+      String freeMarkerTemplateName, String summary) throws Exception {
 
-    String wikiPage=this.processTemplate(rootMap, freeMarkerTemplateName);
-   
+    String wikiPage = this.processTemplate(rootMap, freeMarkerTemplateName);
+
     // System.out.println(wikiPage);
     LOGGER.log(Level.INFO, "updating " + pageTitle + " on " + wiki.getSiteurl()
         + wiki.getScriptPath());
@@ -237,6 +243,7 @@ public class PageSchema extends SchemaItem {
   }
 
   List<Property> properties = null;
+  private Field primaryKeyField;
 
   /**
    * @return the properties
@@ -265,92 +272,24 @@ public class PageSchema extends SchemaItem {
   }
 
   /**
-   * Utility class for the Concept and ListPage
-   * 
-   * @author wf
-   *
+   * get the primaryKeyField (the first mandatory field)
+   * @return
    */
-  public class ConceptPage {
-    PageSchema pageSchema;
-    String listPageTitle;
-    String conceptPageTitle;
-    Field linkField;
-
-    /**
-     * @return the pageSchema
-     */
-    public PageSchema getPageSchema() {
-      return pageSchema;
-    }
-
-    /**
-     * @param pageSchema
-     *          the pageSchema to set
-     */
-    public void setPageSchema(PageSchema pageSchema) {
-      this.pageSchema = pageSchema;
-    }
-
-    /**
-     * @return the listPageTitle
-     */
-    public String getListPageTitle() {
-      return listPageTitle;
-    }
-
-    /**
-     * @param listPageTitle
-     *          the listPageTitle to set
-     */
-    public void setListPageTitle(String listPageTitle) {
-      this.listPageTitle = listPageTitle;
-    }
-
-    /**
-     * a List Page
-     * 
-     * @param pageSchema
-     */
-    public ConceptPage(PageSchema pageSchema) {
-      this.pageSchema = pageSchema;
-      init();
-    }
-
-    /**
-     * check whether this list Page is available
-     * 
-     * @return
-     */
-    public boolean isAvailable() {
-      boolean result = linkField != null;
-      return result;
-    }
-
-    /**
-     * initialize me
-     */
-    public void init() {
-      // create list of Concept Pages
-      listPageTitle = "List of " + pageSchema.getPluralName();
-      conceptPageTitle = "Concept:" + pageSchema.getName();
-      linkField = null; // field to link Page to categories -
-      // FIXME - do we still need that crutch?
-      // query expects non null value (pseudo-primary key ...)
-      // could be null after the following search if no mandatory field is
-      // specified
-      for (Template template : pageSchema.templates) {
+  public Field getPrimaryKeyField() {
+    if (primaryKeyField == null) {
+      for (Template template : templates) {
         for (Field field : template.fields) {
           for (Parameter param : field.formInput.parameters) {
             if ("mandatory".equals(param.name.toLowerCase())) {
-              if (linkField == null) {
-                linkField = field;
+              if (primaryKeyField == null) {
+                primaryKeyField = field;
               } // if linkfield
             } // mandatory
           } // for param
         }
       }
     }
-
+    return primaryKeyField;
   }
 
   /**
@@ -371,7 +310,6 @@ public class PageSchema extends SchemaItem {
     if (debug)
       LOGGER.log(Level.INFO, xml);
     // create the listPage
-    ConceptPage listPage = new ConceptPage(this);
     Map<String, Object> rootMap = new HashMap<String, Object>();
     rootMap.put("pageSchema", this);
     rootMap.put("linkedSchemas", linkedSchemas);
@@ -381,35 +319,36 @@ public class PageSchema extends SchemaItem {
     rootMap.put("xml", xml);
     rootMap.put("uml", uml);
     rootMap.put("documentation", this.wikiDocumentation);
-    rootMap.put("listPage", listPage);
     rootMap.put("sourcedocumentation", this.getSourceDocumentation());
     rootMap.put("generated", getGenerationTimeStamp(wiki));
 
     updateWithTemplate(wiki, rootMap, pageTitle, "CategoryPage.ftl");
 
-    if (!listPage.isAvailable()) {
+    if (this.getPrimaryKeyField()==null) {
       LOGGER.log(Level.WARNING, "no mandatory field specified for Category "
           + this.category);
     } else {
       rootMap.put("template", this.getTemplates().get(0));
-      rootMap.put("conceptPage", listPage);
-      updateWithTemplate(wiki, rootMap, listPage.conceptPageTitle,
+      updateWithTemplate(wiki, rootMap, "Concept:"+this.getCategory(),
           "ConceptPage.ftl");
-      updateWithTemplate(wiki, rootMap, listPage.listPageTitle, "ListPage.ftl");
+      updateWithTemplate(wiki, rootMap, "List of "+this.getPluralName(), "ListPage.ftl");
     }
   }
-  
+
   /**
-   * update the property declaration pages 
-   * @param wiki - the wiki
-   * @throws Exception 
+   * update the property declaration pages
+   * 
+   * @param wiki
+   *          - the wiki
+   * @throws Exception
    */
-  public void updatePropertyDeclarationPages(MediawikiApi wiki) throws Exception {
-    for (Property property:this.getProperties()) {
+  public void updatePropertyDeclarationPages(MediawikiApi wiki)
+      throws Exception {
+    for (Property property : this.getProperties()) {
       Map<String, Object> rootMap = new HashMap<String, Object>();
       rootMap.put("pageSchema", this);
-      rootMap.put("property",property);
-      String pageTitle="Property:"+property.getName();
+      rootMap.put("property", property);
+      String pageTitle = "Property:" + property.getName();
       updateWithTemplate(wiki, rootMap, pageTitle, "PropertyPage.ftl");
     }
   }
@@ -425,8 +364,6 @@ public class PageSchema extends SchemaItem {
         + wiki.getIsoTimeStamp();
     return result;
   }
-
-  
 
   /**
    * get the default Template
@@ -471,7 +408,5 @@ public class PageSchema extends SchemaItem {
     }
     return result;
   }
-
-  
 
 }

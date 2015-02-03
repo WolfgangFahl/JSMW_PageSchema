@@ -1,5 +1,4 @@
 === Concept ===
-<#assign pageSchema=conceptPage.getPageSchema()/>
 {{Concept
 |name=${pageSchema.name}
 }}

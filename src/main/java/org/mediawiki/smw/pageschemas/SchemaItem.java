@@ -144,6 +144,9 @@ public abstract class SchemaItem {
 	 */
 	@XmlAttribute
 	public String getPluralName() {
+	  if (name!=null && pluralName==null) {
+	    return this.name+"s";
+	  }
 		return pluralName;
 	}
 
