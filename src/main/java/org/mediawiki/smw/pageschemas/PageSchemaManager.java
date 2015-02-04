@@ -50,6 +50,14 @@ public class PageSchemaManager {
   }
 
   /**
+   * add the given pageSchema
+   * @param pageSchema
+   */
+  public void addPageSchema(PageSchema pageSchema) {
+    this.pageSchemas.put(pageSchema.getCategory(),pageSchema);
+  }
+  
+  /**
    * show a list of my pageSchemas for debugging
    * 
    * @return
