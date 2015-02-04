@@ -41,8 +41,8 @@ import com.bitplan.rest.freemarker.FreeMarkerConfiguration;
 @XmlSeeAlso({ SchemaItem.class })
 // "wikiDocumentation","umlDocumentation",
 @XmlType(propOrder = { "value", "forms", "templates", "sections" })
-public class PageSchema extends SchemaItem {
-  private static final String VERSION = "0.0.2";
+public class PageSchema extends SchemaItem implements WikiPageGenerator {
+  private static final String VERSION = "0.0.3";
 
   /**
    * get the link to JSMW
@@ -67,7 +67,9 @@ public class PageSchema extends SchemaItem {
   List<Section> sections = new ArrayList<Section>();
   @XmlTransient
   private PageSchemaManager pageSchemaManager;
-
+  @XmlTransient
+  WikiPageGenerator pageGenerator=this;
+  
   /**
    * default constructor to make JAXB happy
    */
@@ -144,6 +146,20 @@ public class PageSchema extends SchemaItem {
    */
   public void setSections(List<Section> sections) {
     this.sections = sections;
+  }
+
+  /**
+   * @return the pageGenerator
+   */
+  public WikiPageGenerator getPageGenerator() {
+    return pageGenerator;
+  }
+
+  /**
+   * @param pageGenerator the pageGenerator to set
+   */
+  public void setPageGenerator(WikiPageGenerator pageGenerator) {
+    this.pageGenerator = pageGenerator;
   }
 
   /**
@@ -359,7 +375,7 @@ public class PageSchema extends SchemaItem {
    * @param wiki
    * @return
    */
-  private String getGenerationTimeStamp(MediawikiApi wiki) {
+  protected String getGenerationTimeStamp(MediawikiApi wiki) {
     String result = "generated with " + getJSMW_Link() + " at "
         + wiki.getIsoTimeStamp();
     return result;
