@@ -30,5 +30,4 @@ public class Parameter extends SchemaItem {
 		this.value=value;
 	}
 
-	
 }
