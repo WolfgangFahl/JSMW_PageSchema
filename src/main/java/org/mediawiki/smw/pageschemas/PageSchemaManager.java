@@ -50,6 +50,20 @@ public class PageSchemaManager {
   }
 
   /**
+   * @return the pageSchemas
+   */
+  public Map<String, PageSchema> getPageSchemas() {
+    return pageSchemas;
+  }
+
+  /**
+   * @param pageSchemas the pageSchemas to set
+   */
+  public void setPageSchemas(Map<String, PageSchema> pageSchemas) {
+    this.pageSchemas = pageSchemas;
+  }
+
+  /**
    * add the given pageSchema
    * @param pageSchema
    */
