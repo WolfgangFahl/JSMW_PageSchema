@@ -213,7 +213,9 @@ public class PageSchema extends SchemaItem implements WikiPageGenerator {
     FreeMarkerConfiguration.addTemplateClass(PageSchema.class,
         getFreemarkerTemplatePath());
     // process the template with the given name
-    LOGGER.log(Level.INFO,"processing template "+freeMarkerTemplateName+" from path "+getFreemarkerTemplatePath());
+    if (debug)
+      LOGGER.log(Level.INFO, "processing template " + freeMarkerTemplateName
+          + " from path " + getFreemarkerTemplatePath());
     String result = FreeMarkerConfiguration.doProcessTemplate(
         freeMarkerTemplateName, rootMap);
     return result;
