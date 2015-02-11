@@ -341,16 +341,17 @@ public class PageSchema extends SchemaItem implements WikiPageGenerator {
     rootMap.put("sourcedocumentation", this.getSourceDocumentation());
     rootMap.put("generated", getGenerationTimeStamp(wiki));
 
-    updateWithTemplate(wiki, rootMap, pageTitle, "CategoryPage.ftl");
+    // call the pageGenerator
+    this.getPageGenerator().updateWithTemplate(wiki, rootMap, pageTitle, "CategoryPage.ftl");
 
     if (this.getPrimaryKeyField()==null) {
       LOGGER.log(Level.WARNING, "no mandatory field specified for Category "
           + this.category);
     } else {
       rootMap.put("template", this.getTemplates().get(0));
-      updateWithTemplate(wiki, rootMap, "Concept:"+this.getCategory(),
+      this.getPageGenerator().updateWithTemplate(wiki, rootMap, "Concept:"+this.getCategory(),
           "ConceptPage.ftl");
-      updateWithTemplate(wiki, rootMap, "List of "+this.getPluralName(), "ListPage.ftl");
+      this.getPageGenerator().updateWithTemplate(wiki, rootMap, "List of "+this.getPluralName(), "ListPage.ftl");
     }
   }
 
@@ -368,7 +369,7 @@ public class PageSchema extends SchemaItem implements WikiPageGenerator {
       rootMap.put("pageSchema", this);
       rootMap.put("property", property);
       String pageTitle = "Property:" + property.getName();
-      updateWithTemplate(wiki, rootMap, pageTitle, "PropertyPage.ftl");
+      this.getPageGenerator().updateWithTemplate(wiki, rootMap, pageTitle, "PropertyPage.ftl");
     }
   }
 
