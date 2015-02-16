@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>com.bitplan</groupId>
 			<artifactId>mediawiki-japi</artifactId>
-			<version>0.0.3</version>
+			<version>0.0.4</version>
 		</dependency>
 		<!-- freemarker template support -->
 		<dependency>
