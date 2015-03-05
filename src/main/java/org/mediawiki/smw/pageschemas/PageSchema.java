@@ -319,6 +319,8 @@ public class PageSchema extends SchemaItem implements WikiPageGenerator {
    */
   public void update(MediawikiApi wiki, List<PageSchema> linkedSchemas)
       throws Exception {
+    if (wiki==null)
+      throw new Exception("wiki must be set!");
     if (this.category == null)
       throw new Exception("the category of the schema must be set!");
     String pageTitle = "Category:" + this.category;
